@@ -3,7 +3,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>まなざしアトリエ</title>
-<meta name="description" content="視線入力（マウスエミュレーション）で、見つめたところに色が広がるお絵描きアプリ v1.5.0">
+<link rel="icon" type="image/png" href="data:image/png;base64,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">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="まなざしアトリエ">
+<meta name="description" content="視線入力（マウスエミュレーション）で、見つめたところに色が広がるお絵描きアプリ v1.8.0">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&family=BIZ+UDPGothic:wght@400;700&display=swap">
@@ -61,7 +64,10 @@ body.hide-cursor #art,body.hide-cursor .dw{cursor:none}
 
 #gear{position:fixed;z-index:6;top:calc(12px + env(safe-area-inset-top,0px));right:calc(12px + env(safe-area-inset-right,0px));width:44px;height:44px;border-radius:12px;border:0;background:rgba(255,255,255,.12);color:#fff;display:grid;place-items:center;cursor:pointer}
 #gear svg{width:24px;height:24px}
-#pauseBadge{position:fixed;z-index:4;top:calc(16px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);padding:10px 22px;border-radius:999px;background:var(--tb-bg);color:var(--tb-fg);font-family:var(--font-display);font-weight:700;font-size:20px;letter-spacing:.08em}
+body.light-bg #gear{background:rgba(40,36,80,.14);color:#2a2440}
+#tbBand{position:fixed;z-index:3;pointer-events:none;background:rgba(79,63,208,.20)}
+#tbBand.l{border-right:2px dashed rgba(143,132,255,.55)}#tbBand.r{border-left:2px dashed rgba(143,132,255,.55)}#tbBand.t{border-bottom:2px dashed rgba(143,132,255,.55)}#tbBand.b{border-top:2px dashed rgba(143,132,255,.55)}
+#pauseBadge{position:fixed;z-index:4;top:calc(68px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);padding:10px 22px;border-radius:999px;background:var(--tb-bg);color:var(--tb-fg);font-family:var(--font-display);font-weight:700;font-size:20px;letter-spacing:.08em}
 
 /* welcome */
 #welcome{position:fixed;inset:0;z-index:7;display:grid;place-items:center;padding-inline:16px}
@@ -131,6 +137,7 @@ kbd{font-family:var(--font-body);border:1px solid var(--ui-line);border-radius:5
 .txt{grid-column:1/-1;width:100%;font:inherit;font-size:15px;padding:9px 10px;border-radius:10px;border:1.5px solid var(--ui-line);background:var(--ui-bg);color:var(--ui-fg)}
 a.btn{text-decoration:none;display:inline-block}
 #bigToast{position:fixed;z-index:6;left:50%;top:50%;transform:translate(-50%,-50%);padding:18px 34px;border-radius:24px;background:rgba(14,16,38,.82);color:#fff;font-family:var(--font-display);font-weight:700;font-size:clamp(28px,6vw,56px);letter-spacing:.06em;pointer-events:none;white-space:nowrap}
+#bigToast.top{top:calc(14% + env(safe-area-inset-top,0px));font-size:clamp(18px,3vw,28px);white-space:normal;max-width:calc(100% - 32px);text-align:center}
 #picker{position:fixed;inset:0;z-index:7;display:grid;place-items:center;background:rgba(5,7,20,.94);padding-inline:16px}
 .pk-box{display:grid;gap:18px;justify-items:center}
 #pkTitle{margin:0;color:#f2f1fa;font-family:var(--font-display);font-weight:700;font-size:clamp(20px,3vw,30px);letter-spacing:.06em}
@@ -148,6 +155,7 @@ a.btn{text-decoration:none;display:inline-block}
 <canvas id="art"></canvas>
 <canvas id="overlay"></canvas>
 
+<div id="tbBand" hidden aria-hidden="true"></div>
 <div id="toolbar" class="pos-left" aria-label="見つめて選ぶボタン">
   <button class="dw" data-dwell="brush" id="tbBrush"><span class="ring"></span><span class="ic"></span><span class="lb">ふで</span></button>
   <button class="dw" data-dwell="color" id="tbColor"><span class="ring"></span><span class="sw"></span><span class="lb">いろ</span></button>
@@ -203,14 +211,22 @@ a.btn{text-decoration:none;display:inline-block}
     <p class="hint" id="inputHint"></p>
   </section>
 
-  <section class="sec"><h3>ふで</h3><div class="chips" id="chipsBrush"></div><h3 style="margin-top:12px">一覧・順番に出すふで</h3><div class="chips" id="chipsShowBrush"></div></section>
-  <section class="sec"><h3>いろ</h3><div class="chips" id="chipsColor"></div><h3 style="margin-top:12px">一覧・順番に出すいろ</h3><div class="chips" id="chipsShowColor"></div></section>
-  <section class="sec"><h3>もよう（対称）</h3><div class="chips" id="chipsSym"></div><h3 style="margin-top:12px">一覧・順番に出すもよう</h3><div class="chips" id="chipsShowSym"></div><p class="hint">一覧や順番に出すものを2〜3にしぼると、ボタンが大きくなり、選びやすくなります。</p></section>
+  <section class="sec"><h3>はじめのふで</h3><p class="hint" style="margin:0 0 8px">アプリを開いたとき・「はじめる」のときに使うふで</p><div class="chips" id="chipsBrush"></div><h3 style="margin-top:12px">一覧・順番に出すふで</h3><div class="chips" id="chipsShowBrush"></div></section>
+  <section class="sec"><h3>はじめのいろ</h3><p class="hint" style="margin:0 0 8px">アプリを開いたとき・「はじめる」のときに使ういろ</p><div class="chips" id="chipsColor"></div><h3 style="margin-top:12px">一覧・順番に出すいろ</h3><div class="chips" id="chipsShowColor"></div></section>
+  <section class="sec"><h3>はじめのもよう（左右・上下の対称）</h3><p class="hint" style="margin:0 0 8px">アプリを開いたとき・「はじめる」のときに使うもよう</p><div class="chips" id="chipsSym"></div><h3 style="margin-top:12px">一覧・順番に出すもよう</h3><div class="chips" id="chipsShowSym"></div><p class="hint">一覧や順番に出すものを2〜3にしぼると、ボタンが大きくなり、選びやすくなります。</p></section>
 
-  <section class="sec"><h3>ペンの上げ下げ</h3>
+  <section class="sec"><h3>ペンを下ろす（描きはじめる）</h3>
     <div class="chips" id="chipsPen"></div>
     <div class="row" id="penRow" style="margin-top:10px"><label for="rPen">描きはじめるまで見つめる時間</label><output id="oPen"></output><input type="range" id="rPen" min="0.5" max="2" step="0.1"></div>
     <p class="hint" id="penHint"></p>
+    <h3 style="margin-top:14px">ペンを上げる（描くのをやめる）</h3>
+    <div class="chips" id="chipsPenUp"></div>
+    <p class="hint">ボタンの所へ目を移したとき、「やすむ」のときも、いつでもペンが上がります。</p>
+    <h3 style="margin-top:14px">画面のふちの印（見つめるとペンが上がる）</h3>
+    <div class="chips" id="chipsEdge"></div>
+    <div class="chips" id="chipsEdgeShow" style="margin-top:8px"></div>
+    <div class="row" id="edgeRow" style="margin-top:10px"><label for="rEdge">印を見つめて上がるまでの時間</label><output id="oEdge"></output><input type="range" id="rEdge" min="0.5" max="3" step="0.1"></div>
+    <p class="hint">おすすめ：ふつうのマウス → 下ろす・上げるともにクリック／トラックボール → 合図なし、または見つめて下ろす／視線入力装置 → 見つめて下ろす＋ふちの印やまばたきクリックで上げる（装置のソフトで、クリックになるまばたきの長さを長めにしておくと、自然なまばたきで上がりません）／タブレット → 指を付けている間だけ描きます（設定は不要）。</p>
     <p class="hint" id="headIdea">顔の向きで描く人へ：ペンを上げる・下ろす合図に、どんな動きが使いやすいか、まだ分かっていません。アイデアがあれば <a href="https://toitoitoi-lab.github.io/contact/" target="_blank" rel="noopener">toi toi toi lab のお問い合わせ</a> から教えてください。</p>
   </section>
 
@@ -231,12 +247,17 @@ a.btn{text-decoration:none;display:inline-block}
     <h3 style="margin-top:6px">出すボタン</h3>
     <div class="chips" id="chipsTbShow" style="margin-bottom:12px"></div>
     <div class="chips" id="chipsPos" style="margin-bottom:10px"></div>
+    <div class="row" style="margin-top:6px"><label for="rTbSize">ボタンの大きさ</label><output id="oTbSize"></output><input type="range" id="rTbSize" min="48" max="180" step="4"></div>
     <div class="chips" id="chipsTbSize"></div>
     <p class="device" id="deviceInfo"></p>
     <p class="hint">「なし」にすると画面すべてがキャンバスになり、ボタンの誤作動がなくなります。切り替えはこの設定から行います。</p>
   </section>
 
-  <section class="sec"><h3>背景</h3><div class="chips" id="chipsBg"></div><p class="hint">背景を変えると絵はまっさらになります。</p></section>
+  <section class="sec"><h3>背景の色</h3><div class="chips" id="chipsBg"></div>
+    <div class="row" style="margin-top:10px"><label for="bgPick">好きな色を選んで足す</label><span></span>
+      <div style="grid-column:1/-1;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><input type="color" id="bgPick" value="#fde2e4" style="width:56px;height:40px;border:0;background:none;padding:0"><button class="btn ghost" id="bAddBg">パレットに足す</button><button class="btn ghost" id="bDelBg">選んでいる足した色を消す</button></div></div>
+    <div class="chips" id="chipsPastel" style="margin-top:8px"></div>
+    <p class="hint">パステルの見本を押すと、その色がパレットに足されます。背景を変えると絵はまっさらになります（変える前に「画像にする」で残してください）。</p></section>
 
   <section class="sec"><h3>作品</h3>
     <div class="btns">
@@ -281,7 +302,7 @@ a.btn{text-decoration:none;display:inline-block}
   <section class="sec"><h3>キーボード</h3>
     <p class="keys"><kbd>Space</kbd> やすむ／つづける　<kbd>H</kbd> 設定　<kbd>S</kbd> 画像にする　<kbd>F</kbd> 全画面　<kbd>C</kbd> 色を切り替え　<kbd>B</kbd> ふでを切り替え　<kbd>Z</kbd> もどる　<kbd>Y</kbd> すすむ　<kbd>E</kbd> けす　<kbd>R</kbd> リセット</p>
   </section>
-  <p class="ver">まなざしアトリエ v1.5.0 public</p>
+  <p class="ver">まなざしアトリエ v1.8.0 public</p>
 </aside>
 
 <video id="camVideo" class="off" playsinline muted></video>
@@ -326,7 +347,7 @@ a.btn{text-decoration:none;display:inline-block}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
 (()=>{
-const VERSION='1.5.0';
+const VERSION='1.8.0';
 const BRUSHES=[
   {id:'fude',name:'ふで',svg:'<path d="M3 17c4-8 7 4 11-4s5-6 7-6" stroke-width="3"/>'},
   {id:'pencil',name:'いろえんぴつ',svg:'<path d="M4 17l4-4M7 18l6-6M11 18l8-8M14 15l5-5" stroke-width="1.3"/>'},
@@ -346,26 +367,32 @@ const COLORS=[
   {id:'mono',name:'しろ'}
 ];
 const SYMS=[{n:1,name:'なし'},{n:2,name:'左右'},{n:4,name:'上下左右'},{n:6,name:'万華鏡6'},{n:8,name:'万華鏡8'}];
-const BGS=[{id:'night',name:'よぞら',c:'#0b1026',dark:true},{id:'black',name:'くろ',c:'#000000',dark:true},{id:'white',name:'しろ',c:'#ffffff',dark:false},{id:'cloud',name:'うすぐも',c:'#e9edf4',dark:false}];
+const BGS=[{id:'night',name:'こい紺（夜空）',c:'#0b1026',dark:true},{id:'black',name:'まっくろ',c:'#000000',dark:true},{id:'white',name:'まっしろ',c:'#ffffff',dark:false},{id:'cloud',name:'うすい灰色',c:'#e9edf4',dark:false}];
+const PASTELS=[['さくら','#fde2e4'],['もも','#ffd6e0'],['みかん','#ffe5c7'],['レモン','#fff6c2'],['わかば','#dff5d8'],['ミント','#d4f3ec'],['そら','#d8ecff'],['ラベンダー','#e6defa']];
+const lum=h=>{const n=parseInt(h.slice(1),16),r=(n>>16&255)/255,g=(n>>8&255)/255,b=(n&255)/255;return .2126*r+.7152*g+.0722*b;};
+const allBgs=()=>BGS.concat((st.customBgs||[]).map(c=>({id:'c'+c.slice(1),name:c.toUpperCase(),c,dark:lum(c)<.45})));
 const INPUTS=[{id:'pointer',name:'マウス・視線入力装置'},{id:'gaze',name:'カメラ：目の動き'},{id:'head',name:'カメラ：顔の向き'}];
 const INPUT_HINT={pointer:'視線入力装置（マウスモード）、マウス、タッチで描きます。',gaze:'インカメラで目の動きを読み取ります。顔をあまり動かさず、画面から40〜60cmの距離で。精度は視線入力装置より低く、画面を大まかにねらう使い方に向いています。',head:'インカメラで顔の向きを読み取ります。目の動きより安定しやすく、首を少し動かせる人に向いています。調整で、動かせる範囲が画面全体に広がります。'};
 const POS=[{id:'left',name:'ボタン：左'},{id:'right',name:'右'},{id:'bottom',name:'下'},{id:'top',name:'上'},{id:'off',name:'なし'}];
 const TBS=[{id:'auto',name:'ボタン：自動'},{id:'s',name:'小',px:80},{id:'m',name:'中',px:104},{id:'l',name:'大',px:136}];
 
-const DEF={penSignal:'dwell',penMs:1000,pickShow:{brush:{},color:{},sym:{}},pickMode:'list',tbShow:{brush:true,color:true,sym:true,undo:true,redo:true,erase:true,reset:true,pause:true},select:'both',blinkMs:800,eraser:false,input:'pointer',camId:'',learner:'',saveMode:'download',brush:'bubbles',color:'rainbow',sym:1,size:30,smooth:6,dwell:1.5,pos:'left',tbsize:'auto',fade:false,fadeSpeed:3,cursor:true,sound:false,bg:'night',heat:false};
+const DEF={startBrush:'bubbles',startColor:'rainbow',startSym:1,customBgs:[],penDown:'dwell',penUpBy:{blink:true,click:true},edgeMode:'corners',edgeShow:'always',edgeMs:1500,penMs:1000,pickShow:{brush:{},color:{},sym:{}},pickMode:'list',tbShow:{brush:true,color:true,sym:true,undo:true,redo:true,erase:true,reset:true,pause:true},select:'both',blinkMs:800,eraser:false,input:'pointer',camId:'',learner:'',saveMode:'download',brush:'bubbles',color:'rainbow',sym:1,size:30,smooth:6,dwell:1.5,pos:'left',tbsize:'auto',fade:false,fadeSpeed:3,cursor:true,sound:false,bg:'night',heat:false};
 let st=Object.assign({},DEF);
 try{const s=JSON.parse(localStorage.getItem('manazashi-atelier')||'null'); if(s) st=Object.assign(st,s);}catch(e){}
 st.tbShow=Object.assign({},DEF.tbShow,st.tbShow||{});
 st.pickShow=Object.assign({brush:{},color:{},sym:{}},st.pickShow||{});
+if(st.edgeMs===500) st.edgeMs=1500; if(st.tbsize!=='auto'&&typeof st.tbsize!=='number'){const o={s:80,m:104,l:136}; st.tbsize=o[st.tbsize]||'auto';}
+if(st.penSignal&&!('penDownSet' in st)){st.penDown=st.penSignal;} delete st.penSignal; st.penUpBy=Object.assign({},DEF.penUpBy,st.penUpBy||{});
 // 開いたときは毎回「しゃぼん玉・にじ・もようなし・消しゴムオフ」から始める
-st.brush=DEF.brush; st.color=DEF.color; st.sym=1; st.eraser=false;
+st.brush=st.startBrush||DEF.brush; st.color=st.startColor||DEF.color; st.sym=st.startSym||1; st.eraser=false;
+if(!BRUSHES.some(b=>b.id===st.brush)) st.brush=DEF.brush;
 function persist(){try{localStorage.setItem('manazashi-atelier',JSON.stringify(st));}catch(e){}}
 
 const $=id=>document.getElementById(id);
 const art=$('art'), ov=$('overlay');
 const ax=art.getContext('2d'), ox=ov.getContext('2d');
 let W=innerWidth,H=innerHeight,DPR=Math.min(devicePixelRatio||1,2);
-const bgObj=()=>BGS.find(b=>b.id===st.bg)||BGS[0];
+const bgObj=()=>allBgs().find(b=>b.id===st.bg)||BGS[0];
 
 function sizeCanvases(keep){
   const nW=innerWidth,nH=innerHeight;
@@ -377,7 +404,7 @@ function sizeCanvases(keep){
   fillBg();
   if(tmp){ax.save();ax.setTransform(1,0,0,1,0,0);ax.drawImage(tmp,0,0,art.width,art.height);ax.restore();}
 }
-function fillBg(){ax.save();ax.globalCompositeOperation='source-over';ax.globalAlpha=1;ax.fillStyle=bgObj().c;ax.fillRect(0,0,W,H);ax.restore();document.body.style.background=bgObj().c;}
+function fillBg(){document.body.classList.toggle('light-bg',!bgObj().dark);ax.save();ax.globalCompositeOperation='source-over';ax.globalAlpha=1;ax.fillStyle=bgObj().c;ax.fillRect(0,0,W,H);ax.restore();document.body.style.background=bgObj().c;}
 
 /* ---------- color ---------- */
 let hue=200;
@@ -551,8 +578,8 @@ const raw={x:W/2,y:H/2}, sm={x:W/2,y:H/2}, ui={x:W/2,y:H/2};
 let prev={x:W/2,y:H/2}, inside=false, lastMove=0;
 let anchor={x:W/2,y:H/2}, dwell=0;
 addEventListener('pointermove',e=>{if(isCam()) return;raw.x=e.clientX;raw.y=e.clientY;if(!inside){sm.x=prev.x=ui.x=raw.x;sm.y=prev.y=ui.y=raw.y;}inside=true;lastMove=performance.now();},{passive:true});
-addEventListener('pointerdown',e=>{if(isCam()) return;raw.x=e.clientX;raw.y=e.clientY;if(e.pointerType==='touch'){sm.x=prev.x=ui.x=raw.x;sm.y=prev.y=ui.y=raw.y;}inside=true;},{passive:true});
-addEventListener('pointerup',e=>{if(isCam()) return;if(e.pointerType==='touch') inside=false;},{passive:true});
+addEventListener('pointerdown',e=>{if(isCam()) return;lastTouch=e.pointerType==='touch';raw.x=e.clientX;raw.y=e.clientY;if(e.pointerType==='touch'){sm.x=prev.x=ui.x=raw.x;sm.y=prev.y=ui.y=raw.y;if(e.target===art) penDown=true;}inside=true;},{passive:true});
+addEventListener('pointerup',e=>{if(isCam()) return;if(e.pointerType==='touch'){inside=false;penDown=false;}},{passive:true});
 document.addEventListener('pointerleave',()=>{if(!isCam()) inside=false;});
 addEventListener('blur',()=>{if(!isCam()) inside=false;});
 
@@ -686,7 +713,7 @@ function blinkScore(res){
 }
 const blinkOn=()=>isCam()&&(st.select==='blink'||st.select==='both');
 function blinkTick(now,score){
-  if(!(blinkOn()||st.penSignal==='blink')||!isCam()||calib.active){blink.closedAt=0;blink.prog=0;return;}
+  if(!(blinkOn()||st.penDown==='blink'||st.penUpBy.blink)||!isCam()||calib.active){blink.closedAt=0;blink.prog=0;return;}
   if(score>.45){
     if(!blink.closedAt) blink.closedAt=now;
     blink.prog=Math.min(1,(now-blink.closedAt)/st.blinkMs);
@@ -700,7 +727,7 @@ function blinkSelect(){
     const r=el.getBoundingClientRect();
     if(ui.x>r.left-10&&ui.x<r.right+10&&ui.y>r.top-10&&ui.y<r.bottom+10){ if(blinkOn()) activate(el.dataset.dwell,el); return; }
   }
-  if(st.penSignal==='blink'&&started&&!pickerOpen()) togglePen();
+  if(started&&!pickerOpen()) penSignal('blink');
 }
 function camTick(now){
   if(!isCam()||!cam.ready||!cam.video||cam.video.readyState<2) return;
@@ -729,7 +756,7 @@ function camTick(now){
 
 
 /* ---------- app state ---------- */
-let started=false, paused=false, overUIPick=false;
+let started=false, paused=false, overUIPick=false, lastTouch=false;
 const heat={cols:24,rows:14,data:new Float32Array(24*14),time:0};
 const panel=$('panel'), welcome=$('welcome'), saveModal=$('saveModal');
 
@@ -766,11 +793,13 @@ function cycle(kind){
   bigToast(name);
 }
 let toastT=null;
-function bigToast(text){const t=$('bigToast');t.textContent=text;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,1300);}
+function bigToast(text,top,ms){const t=$('bigToast');t.textContent=text;t.classList.toggle('top',!!top);t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,ms||1300);}
 /* ペンの上げ下げ */
-let penDown=false, penProg=0;
-const penNeeded=()=>st.penSignal!=='none';
-function penUp(){ if(penNeeded()) penDown=false; penProg=0; }
+let penDown=false, penProg=0, penArmed=false; // penArmed：ペンが上がったあと、目を動かすまでは見つめても下りない
+const penNeeded=()=>st.penDown!=='none';
+// 合図（blink / click）を受けたとき：下ろす合図なら下ろす、上げる合図なら上げる
+function penSignal(kind){ if(!penNeeded()) return; if(!penDown){ if(st.penDown===kind) togglePen(); } else if(st.penDown===kind||st.penUpBy[kind]) togglePen(); }
+function penUp(){ if(penNeeded()) penDown=false; penProg=0; penArmed=false; dwell=0; anchor={x:sm.x,y:sm.y}; }
 function togglePen(){ if(!penNeeded()) return; penDown=!penDown; penProg=0; dwell=0; anchor={x:sm.x,y:sm.y}; tone(penDown?H*.25:H*.75,.05); }
 /* 一覧から選ぶ（見つめると開く） */
 function openPicker(kind){
@@ -810,7 +839,7 @@ document.querySelectorAll('[data-dwell]').forEach(el=>el.addEventListener('click
 function start(){
   started=true; welcome.hidden=true; particles=[]; fillBg();
   heat.data.fill(0); heat.time=0; histInit(); penUp(); renderUI();
-  if(st.penSignal==='dwell') bigToast('かきたい ところを じっと みてね');
+  if(st.penDown==='dwell') bigToast('かきたい ところへ めを うごかして、じっと みてね',true,3200);
 }
 
 /* ---------- history: もどる / すすむ ---------- */
@@ -853,6 +882,111 @@ function renderHistUI(){
   $('tbUndo').classList.toggle('off',!(hist.idx>0)); $('tbRedo').classList.toggle('off',!(hist.idx<hist.stack.length-1));
 }
 
+/* ---------- 画面のふちの印（見つめるとペンが上がる） ---------- */
+const edge={i:-1,t:0,prog:0,cool:0};
+function drawArea(){ // ボタンの帯をのぞいた、描く場所
+  const A={x0:0,y0:0,x1:W,y1:H};
+  if(band){ if(st.pos==='left') A.x0=band.x1; else if(st.pos==='right') A.x1=band.x0; else if(st.pos==='top') A.y0=band.y1; else if(st.pos==='bottom') A.y1=band.y0; }
+  return A;
+}
+function edgeShapes(){
+  const A=drawArea(), w=A.x1-A.x0, h=A.y1-A.y0;
+  const m=Math.min(w,h), th=Math.max(9,Math.min(14,m*.014)), pad=16+th/2;
+  const out=[];
+  if(st.edgeMode==='corners'||st.edgeMode==='both'){
+    const L=Math.max(60,Math.min(130,m*.11));
+    const all={tl:[A.x0+pad,A.y0+pad,1,1],tr:[A.x1-pad,A.y0+pad,-1,1],bl:[A.x0+pad,A.y1-pad,1,-1],br:[A.x1-pad,A.y1-pad,-1,-1]};
+    const use=st.pos==='left'&&band?['tr','br']:st.pos==='right'&&band?['tl','bl']:st.pos==='top'&&band?['bl','br']:st.pos==='bottom'&&band?['tl','tr']:['tl','tr','bl','br'];
+    for(const k of use){ const [x,y,sx,sy]=all[k];
+      out.push({pts:[[x,y+sy*L],[x,y],[x+sx*L,y]],zone:{x0:Math.min(x,x+sx*(L+20))-pad,x1:Math.max(x,x+sx*(L+20))+pad,y0:Math.min(y,y+sy*(L+20))-pad,y1:Math.max(y,y+sy*(L+20))+pad},th});
+    }
+  }
+  if(st.edgeMode==='edges'||st.edgeMode==='both'){
+    const zw=Math.max(44,m*.07), cx=(A.x0+A.x1)/2, cy=(A.y0+A.y1)/2, hx=w/8, hy=h/8;
+    const sides=[['top',[[cx-hx,A.y0+pad],[cx+hx,A.y0+pad]],{x0:cx-hx-20,x1:cx+hx+20,y0:A.y0,y1:A.y0+zw}],
+                 ['bottom',[[cx-hx,A.y1-pad],[cx+hx,A.y1-pad]],{x0:cx-hx-20,x1:cx+hx+20,y0:A.y1-zw,y1:A.y1}],
+                 ['left',[[A.x0+pad,cy-hy],[A.x0+pad,cy+hy]],{x0:A.x0,x1:A.x0+zw,y0:cy-hy-20,y1:cy+hy+20}],
+                 ['right',[[A.x1-pad,cy-hy],[A.x1-pad,cy+hy]],{x0:A.x1-zw,x1:A.x1,y0:cy-hy-20,y1:cy+hy+20}]];
+    for(const [side,pts,zone] of sides){ if(band&&side===st.pos) continue; out.push({pts,zone,th}); }
+  }
+  return out;
+}
+/* ボタンの帯と歯車の位置 */
+function layoutChrome(){
+  const tb=$('toolbar'), bd=$('tbBand'), g=$('gear');
+  band=null;
+  if(st.pos!=='off'&&!tb.hidden){
+    const r=tb.getBoundingClientRect(), m=12;
+    if(st.pos==='left') band={x0:0,y0:0,x1:r.right+m,y1:H};
+    else if(st.pos==='right') band={x0:r.left-m,y0:0,x1:W,y1:H};
+    else if(st.pos==='top') band={x0:0,y0:0,x1:W,y1:r.bottom+m};
+    else band={x0:0,y0:r.top-m,x1:W,y1:H};
+  }
+  if(band){ bd.hidden=false; bd.className=st.pos[0]; Object.assign(bd.style,{left:band.x0+'px',top:band.y0+'px',width:(band.x1-band.x0)+'px',height:(band.y1-band.y0)+'px'}); }
+  else bd.hidden=true;
+  const gs=g.style; gs.left=gs.right=gs.top=gs.bottom=gs.transform='';
+  if(band&&(st.pos==='left'||st.pos==='right')){ gs.left=((band.x0+band.x1)/2-22)+'px'; gs.top='calc(12px + env(safe-area-inset-top,0px))'; }
+  else if(band&&st.pos==='top'){ gs.right='calc(12px + env(safe-area-inset-right,0px))'; gs.top=((band.y0+band.y1)/2-22)+'px'; }
+  else if(band&&st.pos==='bottom'){ gs.right='calc(12px + env(safe-area-inset-right,0px))'; gs.top=((band.y0+band.y1)/2-22)+'px'; }
+  else if(st.edgeMode==='corners'){ gs.left='50%'; gs.transform='translateX(-50%)'; gs.top='calc(12px + env(safe-area-inset-top,0px))'; }
+  else if(st.edgeMode==='both'){ gs.left='25%'; gs.transform='translateX(-50%)'; gs.top='calc(12px + env(safe-area-inset-top,0px))'; }
+  else { gs.right='calc(12px + env(safe-area-inset-right,0px))'; gs.top='calc(12px + env(safe-area-inset-top,0px))'; }
+}
+function edgeAt(x,y){
+  if(st.edgeMode==='off'||!penNeeded()) return -1;
+  const S=edgeShapes();
+  for(let i=0;i<S.length;i++){const z=S[i].zone; if(x>=z.x0&&x<=z.x1&&y>=z.y0&&y<=z.y1) return i;}
+  return -1;
+}
+function edgeTick(i,dt){
+  if(i<0||!penDown){ edge.i=i; edge.t=0; edge.prog=0; return; }
+  if(edge.i!==i){edge.i=i;edge.t=0;}
+  edge.t+=dt; edge.prog=Math.min(1,edge.t/st.edgeMs);
+  if(edge.prog>=1){ penDown=false; penArmed=false; dwell=0; anchor={x:sm.x,y:sm.y}; edge.t=0; edge.prog=0; tone(H*.75,.05); }
+}
+function strokePath(pts,frac){
+  // pts の折れ線を frac（0〜1）の長さだけ描く
+  let total=0; for(let k=1;k<pts.length;k++) total+=Math.hypot(pts[k][0]-pts[k-1][0],pts[k][1]-pts[k-1][1]);
+  let left=total*frac; ox.beginPath(); ox.moveTo(pts[0][0],pts[0][1]);
+  for(let k=1;k<pts.length&&left>0;k++){
+    const a=pts[k-1],b=pts[k],l=Math.hypot(b[0]-a[0],b[1]-a[1]),t=Math.min(1,left/l);
+    ox.lineTo(a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t); left-=l;
+  }
+  ox.stroke();
+}
+function drawEdges(hit){
+  if(st.edgeMode==='off'||!penNeeded()) return;
+  const S=edgeShapes(), dark=bgObj().dark;
+  ox.save(); ox.lineCap='round'; ox.lineJoin='round';
+  S.forEach((sh,i)=>{
+    const z=sh.zone, cx=(z.x0+z.x1)/2, cy=(z.y0+z.y1)/2;
+    const near=Math.max(0,1-Math.hypot(ui.x-cx,ui.y-cy)/260);
+    let a=st.edgeShow==='always'?.22:0; a=Math.max(a,near*.7);
+    if(i===hit) a=.85;
+    if(a<=0.01) return;
+    if(!dark) a=Math.min(1,a*1.6);
+    const hl=dark?'#ffd23f':'#e06a00';
+    ox.lineWidth=sh.th; ox.strokeStyle=dark?`rgba(255,255,255,${a})`:`rgba(40,40,70,${a})`;
+    if(i===hit&&penDown){ ox.shadowColor=hl; ox.shadowBlur=18; }
+    strokePath(sh.pts,1);
+    if(i===hit&&penDown&&edge.prog>0){ ox.strokeStyle=hl; strokePath(sh.pts,edge.prog); }
+    ox.shadowBlur=0;
+    // 近づいたら「ここで ペンが あがるよ」
+    if(penDown&&(near>.35||i===hit)){
+      const A=drawArea(), mx=(A.x0+A.x1)/2, my=(A.y0+A.y1)/2;
+      const d=Math.hypot(mx-cx,my-cy)||1, lx=cx+(mx-cx)/d*90, ly=cy+(my-cy)/d*70;
+      const txt='ここで ペンが あがるよ'; ox.font='700 16px "Zen Maru Gothic","Hiragino Maru Gothic ProN",sans-serif';
+      const tw=ox.measureText(txt).width+24, al=Math.min(1,(i===hit?1:(near-.35)/.3));
+      ox.globalAlpha=al; ox.fillStyle=dark?'rgba(14,16,38,.85)':'rgba(255,255,255,.92)';
+      ox.beginPath(); ox.roundRect?ox.roundRect(lx-tw/2,ly-16,tw,32,16):ox.rect(lx-tw/2,ly-16,tw,32); ox.fill();
+      ox.strokeStyle=hl; ox.lineWidth=2; ox.stroke();
+      ox.fillStyle=dark?'#fff':'#2a2440'; ox.textAlign='center'; ox.textBaseline='middle'; ox.fillText(txt,lx,ly+1);
+      ox.globalAlpha=1;
+    }
+  });
+  ox.restore();
+}
+
 /* ---------- main loop ---------- */
 let last=performance.now();
 function frame(t){
@@ -873,7 +1007,7 @@ function frame(t){
   const tb=$('toolbar');
   if(!tb.classList.contains('pos-off') && started){
     const r=tb.getBoundingClientRect();
-    if(ui.x>r.left-24&&ui.x<r.right+24&&ui.y>r.top-24&&ui.y<r.bottom+24) overUI=true;
+    if(band&&ui.x>=band.x0&&ui.x<=band.x1&&ui.y>=band.y0&&ui.y<=band.y1) overUI=true;
   }
   for(const el of targets){
     const r=el.getBoundingClientRect();
@@ -887,8 +1021,10 @@ function frame(t){
     el.style.setProperty('--p',(hit&&blink.prog>0?Math.max(s.p,blink.prog):s.p).toFixed(3));
   }
 
+  const edgeHit=(started&&inside&&!overUI&&!overUIPick&&!panelOpen&&!modalOpen)?edgeAt(ui.x,ui.y):-1;
+  edgeTick(edgeHit,dt);
   const onCanvas=started&&!paused&&inside&&!overUI&&!overUIPick&&!panelOpen&&!modalOpen;
-  if(!onCanvas&&penNeeded()&&started) {penDown=false;}
+  if(!onCanvas&&edgeHit<0&&penNeeded()&&started&&!(lastTouch&&inside)) {penDown=false;}
   const canDraw=onCanvas&&(!penNeeded()||penDown);
 
   // fade
@@ -896,9 +1032,9 @@ function frame(t){
 
   const dist=Math.hypot(sm.x-prev.x,sm.y-prev.y);
   // dwell (still) detection, tolerant of gaze jitter
-  if(Math.hypot(sm.x-anchor.x,sm.y-anchor.y)>st.size*.6+6){anchor={x:sm.x,y:sm.y};dwell=0;} else dwell+=dt;
+  if(Math.hypot(sm.x-anchor.x,sm.y-anchor.y)>st.size*.6+6){anchor={x:sm.x,y:sm.y};dwell=0;penArmed=true;} else dwell+=dt;
   // 見つめてペンを下ろす
-  if(onCanvas&&st.penSignal==='dwell'&&!penDown){ penProg=Math.min(1,dwell/st.penMs); if(penProg>=1){penDown=true;penProg=0;dwell=0;anchor={x:sm.x,y:sm.y};tone(H*.25,.05);} } else if(st.penSignal==='dwell'&&!penDown) penProg=0;
+  if(onCanvas&&st.penDown==='dwell'&&!penDown&&penArmed){ penProg=Math.min(1,dwell/st.penMs); if(penProg>=1){penDown=true;penProg=0;dwell=0;anchor={x:sm.x,y:sm.y};tone(H*.25,.05);} } else if(st.penDown==='dwell'&&!penDown) penProg=0;
 
   if(canDraw){
     const still=dwell>220;
@@ -922,6 +1058,7 @@ function frame(t){
   // overlay
   ox.clearRect(0,0,W,H);
   if(st.heat&&started) drawHeat();
+  if(started&&!panelOpen&&!modalOpen&&!pickerOpen()) drawEdges(edgeHit);
   const lifted=penNeeded()&&!penDown&&started;
   if((st.cursor||lifted)&&inside&&started&&!panelOpen&&!modalOpen&&!pickerOpen()){
     const R=st.size*.55+8+(dwell>220&&!overUI&&!lifted?Math.min(dwell,3000)/3000*8:0);
@@ -952,9 +1089,10 @@ function device(){
   if(m<900) return {id:'small',name:'小さめのPC画面',auto:96};
   return {id:'pc',name:coarse?'大きいタブレット':'PC',auto:112};
 }
+let curBsize=104, band=null;
 function fitToolbar(){
-  const d=device(), sel=TBS.find(s=>s.id===st.tbsize)||TBS[0];
-  let b=sel.px||d.auto;
+  const d=device(), wantPx=typeof st.tbsize==='number'?st.tbsize:d.auto;
+  let b=wantPx;
   const tb=$('toolbar'), n=Math.max(1,[...tb.querySelectorAll('.dw')].filter(x=>!x.hidden).length);
   const gap=(innerWidth<=600||innerHeight<=500)?10:16, pad=gap*2, margin=28;
   const vertical=st.pos==='left'||st.pos==='right';
@@ -962,18 +1100,18 @@ function fitToolbar(){
   const fit=k=>Math.floor((room-gap*(k-1))/k);
   const want=b; let per=n; b=Math.min(want,fit(n));
   if(b<Math.min(want,80)&&n>4){per=Math.ceil(n/2); b=Math.min(want,fit(per));}
-  b=Math.max(52,b);
+  b=Math.max(44,b); curBsize=b;
   tb.style.gap=gap+'px'; tb.style.padding=gap+'px';
   tb.style.gridAutoFlow='row'; tb.style.gridTemplateRows='';
   tb.style.gridTemplateColumns=vertical?(per<n?'repeat(2,auto)':'auto'):`repeat(${per},auto)`;
   tb.style.borderRadius=per<n?`${Math.round(b/2+gap)}px`:'999px';
   document.documentElement.style.setProperty('--bsize',b+'px');
-  const el=$('deviceInfo'); if(el) el.textContent=`この画面：${d.name}（${innerWidth}×${innerHeight}）→ ボタン ${b}px`+(b<(sel.px||d.auto)?'（画面に収まるよう縮小）':'');
+  const el=$('deviceInfo'); if(el) el.textContent=`この画面：${d.name}（${innerWidth}×${innerHeight}）→ ボタン ${b}px`+(b<wantPx?'（画面に収まるよう縮小）':'');
 }
 
 /* ---------- UI rendering ---------- */
 const PENS=[{id:'dwell',name:'見つめて下ろす'},{id:'blink',name:'ゆっくりまばたき'},{id:'click',name:'クリック・スイッチ'},{id:'none',name:'合図なし（見ればすぐ描く）'}];
-const PEN_HINT={dwell:'描きたい場所をじっと見つめると、ペンが下りて描きはじめます。ボタンの所へ目を移すとペンが上がります。ペンが上がっている間は、点線の輪だけが動きます。',blink:'目をゆっくりとじるたびに、ペンが下りる・上がるが切り替わります。ボタンの所へ目を移したときも、ペンが上がります。',click:'クリック、外付けスイッチ、Enter キーで、ペンが下りる・上がるが切り替わります。視線入力装置のまばたきクリックも使えます。',none:'見ているところに、すぐ描かれます（見る→色が出る、を知る段階向け）。'};
+const PEN_HINT={dwell:'描きたい場所へ目を動かしてじっと見つめると、ペンが下りて描きはじめます。ペンが上がっている間は、点線の輪だけが動きます。',blink:'目をゆっくりとじると、ペンが下ります（自然なまばたきでは下りません）。',click:'1回クリックするとペンが下ります。指を離して、そのまま動かすだけで描けます（押し続けなくてよい）。外付けスイッチ・Enter キー・視線入力装置のまばたきクリックも使えます。',none:'見ているところに、すぐ描かれます（見る→色が出る、を知る段階向け）。ペンは上がりません。'};
 const TBMAP=[['brush','tbBrush'],['color','tbColor'],['sym','tbSym'],['erase','tbErase'],['undo','tbUndo'],['redo','tbRedo'],['reset','tbReset'],['pause','tbPause']];
 const TBNAME={brush:'ふで',color:'いろ',sym:'もよう',undo:'もどる',redo:'すすむ',erase:'けす',reset:'リセット',pause:'やすむ'};
 const SELECTS=[{id:'both',name:'見つめる・まばたき どちらでも'},{id:'dwell',name:'見つめる'},{id:'blink',name:'ゆっくりまばたき'}];
@@ -1025,26 +1163,35 @@ function renderUI(){
   });
   $('camBox').hidden=!isCam(); $('inputHint').textContent=INPUT_HINT[st.input];
   $('tPreview').checked=!!st.preview; $('camVideo').classList.toggle('off',!(isCam()&&st.preview));
-  chips('chipsBrush',BRUSHES,b=>b.id===st.brush,b=>st.brush=b.id);
+  chips('chipsBrush',BRUSHES,b=>b.id===(st.startBrush||DEF.brush),b=>{st.startBrush=b.id;st.brush=b.id;});
   const showChips=(id,kind,items)=>chips(id,items,x=>((st.pickShow[kind]||{})[x.v]!==false),x=>{const m={...(st.pickShow[kind]||{})};m[x.v]=(m[x.v]===false);const L=items.filter(i=>(i.v===x.v?m[x.v]:m[i.v])!==false);if(!L.length) return;st.pickShow={...st.pickShow,[kind]:m};});
   showChips('chipsShowBrush','brush',BRUSHES.map(b=>({v:b.id,name:b.name})));
   showChips('chipsShowColor','color',COLORS.map(c=>({v:c.id,name:c.id==='mono'?(bgObj().dark?'しろ':'くろ'):c.name})));
   showChips('chipsShowSym','sym',SYMS.map(x=>({v:String(x.n),name:x.name})));
-  chips('chipsPen',PENS,x=>x.id===st.penSignal,x=>{st.penSignal=x.id;penUp();});
-  $('penRow').hidden=st.penSignal!=='dwell';
+  chips('chipsPen',PENS,x=>x.id===st.penDown,x=>{st.penDown=x.id;penUp();});
+  $('penRow').hidden=st.penDown!=='dwell';
+  chips('chipsPenUp',[{id:'blink',name:'ゆっくりまばたき（カメラ）'},{id:'click',name:'クリック・スイッチ・Enter'}],x=>!!st.penUpBy[x.id],x=>{st.penUpBy={...st.penUpBy,[x.id]:!st.penUpBy[x.id]};});
+  chips('chipsEdge',[{id:'corners',name:'角（かぎかっこ）'},{id:'edges',name:'辺（辺の真ん中のバー）'},{id:'both',name:'角と辺の両方'},{id:'off',name:'なし'}],x=>x.id===st.edgeMode,x=>st.edgeMode=x.id);
+  chips('chipsEdgeShow',[{id:'always',name:'いつもうっすら見せる'},{id:'near',name:'近づいたときだけ見せる'}],x=>x.id===st.edgeShow,x=>st.edgeShow=x.id);
+  $('chipsEdgeShow').hidden=$('edgeRow').hidden=st.edgeMode==='off';
+  $('rEdge').value=(st.edgeMs/1000).toFixed(1); $('oEdge').textContent=(st.edgeMs/1000).toFixed(1)+' 秒';
+  layoutChrome();
   $('rPen').value=(st.penMs/1000).toFixed(1); $('oPen').textContent=(st.penMs/1000).toFixed(1)+' 秒';
-  $('penHint').textContent=PEN_HINT[st.penSignal]+(st.penSignal==='blink'&&!isCam()?'（入力方法をカメラにしたときに使えます）':'');
+  $('penHint').textContent=PEN_HINT[st.penDown]+(st.penDown==='blink'&&!isCam()?'（入力方法をカメラにしたときに使えます）':'');
   $('headIdea').style.fontWeight=st.input==='head'?'700':'';
-  chips('chipsColor',COLORS.map(c=>c.id==='mono'?Object.assign({},c,{name:bgObj().dark?'しろ':'くろ'}):c),c=>c.id===st.color,c=>st.color=c.id,c=>swatchCss(c.id));
-  chips('chipsSym',SYMS,s=>s.n===st.sym,s=>st.sym=s.n);
+  chips('chipsColor',COLORS.map(c=>c.id==='mono'?Object.assign({},c,{name:bgObj().dark?'しろ':'くろ'}):c),c=>c.id===(st.startColor||DEF.color),c=>{st.startColor=c.id;st.color=c.id;},c=>swatchCss(c.id));
+  chips('chipsSym',SYMS,s=>s.n===(st.startSym||1),s=>{st.startSym=s.n;st.sym=s.n;});
   chips('chipsTbShow',TBMAP.map(([k,id])=>({k,name:TBNAME[k]})),x=>st.tbShow[x.k]!==false,x=>{st.tbShow={...st.tbShow,[x.k]:!(st.tbShow[x.k]!==false)};});
   chips('chipsPickMode',[{id:'list',name:'見つめると一覧が開く'},{id:'cycle',name:'見つめるたびに次へ'}],x=>x.id===st.pickMode,x=>st.pickMode=x.id);
   chips('chipsSelect',SELECTS,x=>x.id===st.select,x=>st.select=x.id);
   $('blinkRow').hidden=st.select==='dwell';
   $('rBlink').value=(st.blinkMs/1000).toFixed(1); $('oBlink').textContent=(st.blinkMs/1000).toFixed(1)+' 秒';
   chips('chipsPos',POS,p=>p.id===st.pos,p=>st.pos=p.id);
-  chips('chipsTbSize',TBS,s=>s.id===st.tbsize,s=>st.tbsize=s.id);
-  chips('chipsBg',BGS,b=>b.id===st.bg,b=>{if(st.bg!==b.id){st.bg=b.id;particles=[];fillBg();if(started) histInit();}},b=>b.c);
+  chips('chipsTbSize',[{id:'auto',name:'大きさを画面に合わせて自動にする'}],()=>st.tbsize==='auto',()=>st.tbsize='auto');
+  $('rTbSize').value=curBsize; $('oTbSize').textContent=st.tbsize==='auto'?`自動（${curBsize}px）`:`${curBsize}px`;
+  chips('chipsBg',allBgs(),b=>b.id===st.bg,b=>setBg(b.id),b=>b.c);
+  chips('chipsPastel',PASTELS.map(([n,c])=>({name:n,c})),()=>false,x=>addBg(x.c),x=>x.c);
+  $('bDelBg').hidden=!st.bg.startsWith('c');
 
   $('rSize').value=st.size;$('oSize').textContent=st.size+' px';
   $('rSmooth').value=st.smooth;$('oSmooth').textContent=st.smooth===0?'なし':'強さ '+st.smooth;
@@ -1083,7 +1230,8 @@ $('tSound').addEventListener('change',e=>{st.sound=e.target.checked;if(st.sound)
 $('tHeat').addEventListener('change',e=>{st.heat=e.target.checked;persist();renderUI();});
 $('bCalib').addEventListener('click',startCalib);
 $('rPen').addEventListener('input',e=>{st.penMs=Math.round(+e.target.value*1000);persist();renderUI();});
-$('art').addEventListener('pointerdown',()=>{ if(st.penSignal==='click'&&started&&!paused) togglePen(); });
+$('art').addEventListener('pointerdown',e=>{ if(e.pointerType==='touch'||!started||paused) return; penSignal('click'); });
+$('rEdge').addEventListener('input',e=>{st.edgeMs=Math.round(+e.target.value*1000);persist();renderUI();});
 $('rBlink').addEventListener('input',e=>{st.blinkMs=Math.round(+e.target.value*1000);persist();renderUI();});
 $('camSelect').addEventListener('change',e=>{st.camId=e.target.value;persist();if(isCam()){stopCamera();startCamera();}});
 $('tPreview').addEventListener('change',e=>{st.preview=e.target.checked;persist();renderUI();});
@@ -1101,7 +1249,7 @@ $('bClear').addEventListener('click',()=>{
 
 /* ---------- records: trial (this device) / school GAS ---------- */
 const GAS=(typeof google!=='undefined'&&google.script&&google.script.run)?google.script.run:null;
-const DIST_ZIP='manazashi-atelier_v1.5.0_public.zip';
+const DIST_ZIP='manazashi-atelier_v1.8.0_public.zip';
 const CAP=80, WARN=60;
 let gasConfig=null, lastAskAt=0, saveBusy=false;
 if(GAS){try{GAS.withSuccessHandler(c=>{gasConfig=c;renderRecUI();}).withFailureHandler(()=>{}).getConfig();}catch(e){}}
@@ -1339,7 +1487,7 @@ addEventListener('keydown',e=>{
   else if(k==='y'||(k==='z'&&e.shiftKey)){if(started) activate('redo',$('tbRedo'));}
   else if(k==='e'){if(started) activate('erase',$('tbErase'));}
   else if(k==='r'){if(started) activate('reset',$('tbReset'));}
-  else if(k==='enter'){if(started&&!paused) togglePen();}
+  else if(k==='enter'){if(started&&!paused) penSignal('click');}
   else if(k==='escape'){if(pickerOpen()) closePicker(); else if(calib.active) calibCancel(); else if(!$('askBox').hidden) $('askBox').hidden=true; else if(!$('recModal').hidden) $('recModal').hidden=true; else if(!saveModal.hidden) saveModal.hidden=true; else if(!panel.hidden) closePanel();}
 });
 
@@ -1365,6 +1513,11 @@ function sample(){
 }
 
 addEventListener('resize',()=>{sizeCanvases(true);renderUI();});
+function setBg(id){ if(st.bg===id) return; st.bg=id; particles=[]; fillBg(); if(started) histInit(); persist(); renderUI(); }
+function addBg(c){ c=c.toLowerCase(); st.customBgs=(st.customBgs||[]).filter(x=>x!==c); st.customBgs.push(c); if(st.customBgs.length>10) st.customBgs.shift(); setBg('c'+c.slice(1)); persist(); renderUI(); }
+$('bAddBg').addEventListener('click',()=>addBg($('bgPick').value));
+$('bDelBg').addEventListener('click',()=>{ const c='#'+st.bg.slice(1); st.customBgs=(st.customBgs||[]).filter(x=>x!==c); setBg('night'); persist(); renderUI(); });
+$('rTbSize').addEventListener('input',e=>{st.tbsize=+e.target.value;persist();renderUI();});
 sizeCanvases(false); sample(); renderUI(); renderRecUI(); requestAnimationFrame(frame);
 if(isCam()) startCamera();
 })();
