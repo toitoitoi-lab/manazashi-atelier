@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>まなざしアトリエ</title>
-<meta name="description" content="視線入力（マウスエミュレーション）で、見つめたところに色が広がるお絵描きアプリ v1.2.0">
+<meta name="description" content="視線入力（マウスエミュレーション）で、見つめたところに色が広がるお絵描きアプリ v1.3.0">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&family=BIZ+UDPGothic:wght@400;700&display=swap">
@@ -33,10 +33,13 @@ html,body{height:100%;margin:0;overflow:hidden}
 body{background:var(--stage);color:var(--ui-fg);font-family:var(--font-body);-webkit-user-select:none;user-select:none;touch-action:none}
 canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 #overlay{pointer-events:none}
-body.hide-cursor{cursor:none}
+body.hide-cursor #art,body.hide-cursor .dw{cursor:none}
+#panel,#saveModal,#recModal,#askBox,#welcome,#calib{cursor:auto}
+#panel .btn,#panel .chip,#panel a,#panel label,#panel input[type=checkbox],#panel input[type=range],#panel select{cursor:pointer}
+#panel input[type=text]{cursor:text}
 
 /* gaze toolbar */
-#toolbar{position:fixed;z-index:5;display:flex;gap:16px;padding:16px;border-radius:999px;background:var(--tb-bg);backdrop-filter:blur(6px)}
+#toolbar{position:fixed;z-index:5;display:grid;gap:16px;padding:16px;border-radius:999px;background:var(--tb-bg);backdrop-filter:blur(6px)}
 #toolbar.pos-left{left:calc(14px + env(safe-area-inset-left,0px));top:50%;transform:translateY(-50%);flex-direction:column}
 #toolbar.pos-right{right:calc(14px + env(safe-area-inset-right,0px));top:50%;transform:translateY(-50%);flex-direction:column}
 #toolbar.pos-bottom{bottom:calc(14px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%)}
@@ -49,6 +52,8 @@ body.hide-cursor{cursor:none}
   background:conic-gradient(var(--ring) calc(var(--p,0)*360deg),transparent 0);
   -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 7px));
           mask:radial-gradient(farthest-side,transparent calc(100% - 8px),#000 calc(100% - 7px))}
+.dw.off{opacity:.35}
+.dw.on{background:var(--ring);color:#1c1a2b}
 .dw.hot{background:rgba(255,255,255,.2);transform:scale(1.06)}
 .dw.flash{animation:flash .5s}
 @keyframes flash{0%{background:var(--ring);transform:scale(1.15)}100%{background:var(--tb-btn);transform:scale(1)}}
@@ -138,6 +143,10 @@ a.btn{text-decoration:none;display:inline-block}
   <button class="dw" data-dwell="brush" id="tbBrush"><span class="ring"></span><span class="ic"></span><span class="lb">ふで</span></button>
   <button class="dw" data-dwell="color" id="tbColor"><span class="ring"></span><span class="sw"></span><span class="lb">いろ</span></button>
   <button class="dw" data-dwell="sym" id="tbSym"><span class="ring"></span><span class="ic"></span><span class="lb">もよう</span></button>
+  <button class="dw" data-dwell="erase" id="tbErase"><span class="ring"></span><span class="ic"></span><span class="lb">けす</span></button>
+  <button class="dw" data-dwell="undo" id="tbUndo"><span class="ring"></span><span class="ic"></span><span class="lb">もどる</span></button>
+  <button class="dw" data-dwell="redo" id="tbRedo"><span class="ring"></span><span class="ic"></span><span class="lb">すすむ</span></button>
+  <button class="dw" data-dwell="reset" id="tbReset"><span class="ring"></span><span class="ic"></span><span class="lb">リセット</span></button>
   <button class="dw" data-dwell="pause" id="tbPause"><span class="ring"></span><span class="ic"></span><span class="lb">やすむ</span></button>
 </div>
 
@@ -167,6 +176,10 @@ a.btn{text-decoration:none;display:inline-block}
         <select id="camSelect" style="grid-column:1/-1;width:100%;font:inherit;font-size:14px;padding:8px;border-radius:10px;border:1.5px solid var(--ui-line);background:var(--ui-bg);color:var(--ui-fg)"><option value="">自動（内蔵のインカメラ）</option></select></div>
       <p class="hint">外付けのUSBカメラをつないだら、ここで選びます。カメラを変えたら調整もやり直してください。</p>
       <div class="btns" style="margin-top:12px"><button class="btn" id="bCalib">調整する（9点）</button></div>
+      <h3 style="margin-top:16px">ボタンの決め方</h3>
+      <div class="chips" id="chipsSelect"></div>
+      <div class="row" id="blinkRow" style="margin-top:10px"><label for="rBlink">目をとじて決めるまでの長さ</label><output id="oBlink"></output><input type="range" id="rBlink" min="0.4" max="2" step="0.1"></div>
+      <p class="hint">ふつうのまばたき（0.1〜0.4秒ほど）では決まらないよう、目をゆっくりとじて、この長さだけとじたままにすると決まります。とじている間は、ボタンのまわりの輪が黄色くたまります。</p>
       <div class="toggle"><label for="tPreview">カメラ映像を小さく表示</label><input type="checkbox" id="tPreview"></div>
       <p class="hint" id="camStatus" role="status"></p>
     </div>
@@ -189,6 +202,8 @@ a.btn{text-decoration:none;display:inline-block}
 
   <section class="sec"><h3>見つめて選ぶボタン</h3>
     <div class="row"><label for="rDwell">見つめて押せるまでの時間</label><output id="oDwell"></output><input type="range" id="rDwell" min="0.5" max="4" step="0.1"></div>
+    <h3 style="margin-top:6px">出すボタン</h3>
+    <div class="chips" id="chipsTbShow" style="margin-bottom:12px"></div>
     <div class="chips" id="chipsPos" style="margin-bottom:10px"></div>
     <div class="chips" id="chipsTbSize"></div>
     <p class="device" id="deviceInfo"></p>
@@ -238,9 +253,9 @@ a.btn{text-decoration:none;display:inline-block}
   </section>
 
   <section class="sec"><h3>キーボード</h3>
-    <p class="keys"><kbd>Space</kbd> やすむ／つづける　<kbd>H</kbd> 設定　<kbd>S</kbd> 画像にする　<kbd>F</kbd> 全画面　<kbd>C</kbd> 色を切り替え　<kbd>B</kbd> ふでを切り替え</p>
+    <p class="keys"><kbd>Space</kbd> やすむ／つづける　<kbd>H</kbd> 設定　<kbd>S</kbd> 画像にする　<kbd>F</kbd> 全画面　<kbd>C</kbd> 色を切り替え　<kbd>B</kbd> ふでを切り替え　<kbd>Z</kbd> もどる　<kbd>Y</kbd> すすむ　<kbd>E</kbd> けす　<kbd>R</kbd> リセット</p>
   </section>
-  <p class="ver">まなざしアトリエ v1.2.0 public</p>
+  <p class="ver">まなざしアトリエ v1.3.0 public</p>
 </aside>
 
 <video id="camVideo" class="off" playsinline muted></video>
@@ -285,7 +300,7 @@ a.btn{text-decoration:none;display:inline-block}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
 (()=>{
-const VERSION='1.2.0';
+const VERSION='1.3.0';
 const BRUSHES=[
   {id:'crayon',name:'くれよん',svg:'<path d="M3 17c4-8 7 4 11-4s5-6 7-6" stroke-width="3"/>'},
   {id:'bubbles',name:'しゃぼん玉',svg:'<circle cx="8.5" cy="14" r="5"/><circle cx="16.5" cy="7.5" r="3.5"/><circle cx="18" cy="17" r="2.5"/>'},
@@ -310,9 +325,10 @@ const INPUT_HINT={pointer:'視線入力装置（マウスモード）、マウ�
 const POS=[{id:'left',name:'ボタン：左'},{id:'right',name:'右'},{id:'bottom',name:'下'},{id:'top',name:'上'},{id:'off',name:'なし'}];
 const TBS=[{id:'auto',name:'ボタン：自動'},{id:'s',name:'小',px:80},{id:'m',name:'中',px:104},{id:'l',name:'大',px:136}];
 
-const DEF={input:'pointer',camId:'',learner:'',saveMode:'download',brush:'bubbles',color:'rainbow',sym:1,size:30,smooth:6,dwell:1.5,pos:'left',tbsize:'auto',fade:false,fadeSpeed:3,cursor:true,sound:false,bg:'night',heat:false};
+const DEF={tbShow:{brush:true,color:true,sym:true,undo:true,redo:true,erase:true,reset:true,pause:true},select:'both',blinkMs:800,eraser:false,input:'pointer',camId:'',learner:'',saveMode:'download',brush:'bubbles',color:'rainbow',sym:1,size:30,smooth:6,dwell:1.5,pos:'left',tbsize:'auto',fade:false,fadeSpeed:3,cursor:true,sound:false,bg:'night',heat:false};
 let st=Object.assign({},DEF);
 try{const s=JSON.parse(localStorage.getItem('manazashi-atelier')||'null'); if(s) st=Object.assign(st,s);}catch(e){}
+st.tbShow=Object.assign({},DEF.tbShow,st.tbShow||{});
 function persist(){try{localStorage.setItem('manazashi-atelier',JSON.stringify(st));}catch(e){}}
 
 const $=id=>document.getElementById(id);
@@ -609,12 +625,39 @@ function calibFinish(){
   camStatus('調整しました。ずれてきたら、もう一度「調整する」を押してください。');
   setTimeout(()=>{$('calib').hidden=true;},1200);
 }
+/* slow blink = select (camera modes) */
+const blink={closedAt:0,fired:false,prog:0};
+function blinkScore(res){
+  const c=res&&res.faceBlendshapes&&res.faceBlendshapes[0]&&res.faceBlendshapes[0].categories; if(!c) return 0;
+  let l=0,r=0; for(const x of c){ if(x.categoryName==='eyeBlinkLeft') l=x.score; else if(x.categoryName==='eyeBlinkRight') r=x.score; }
+  return Math.min(l,r);
+}
+const blinkOn=()=>isCam()&&(st.select==='blink'||st.select==='both');
+function blinkTick(now,score){
+  if(!blinkOn()||calib.active){blink.closedAt=0;blink.prog=0;return;}
+  if(score>.45){
+    if(!blink.closedAt) blink.closedAt=now;
+    blink.prog=Math.min(1,(now-blink.closedAt)/st.blinkMs);
+    if(blink.prog>=1&&!blink.fired){blink.fired=true;blinkSelect();}
+  }else{blink.closedAt=0;blink.fired=false;blink.prog=0;}
+}
+function blinkSelect(){
+  const panelOpen=!panel.hidden, modalOpen=!saveModal.hidden||!$('recModal').hidden||!$('askBox').hidden;
+  if(panelOpen||modalOpen) return;
+  for(const el of dwellTargets()){
+    const r=el.getBoundingClientRect();
+    if(ui.x>r.left-10&&ui.x<r.right+10&&ui.y>r.top-10&&ui.y<r.bottom+10){activate(el.dataset.dwell,el);return;}
+  }
+}
 function camTick(now){
   if(!isCam()||!cam.ready||!cam.video||cam.video.readyState<2) return;
   if(now-cam.lastTs<30) return; cam.lastTs=now;
   let res=null; try{res=cam.lm.detectForVideo(cam.video,now);}catch(e){return;}
   const f=features(res);
-  if(f){
+  const bl=blinkScore(res);
+  if(f) blinkTick(now,bl);
+  if(f&&bl>.3&&!calib.active){ cam.lastFace=now; f.length=0; }
+  if(f&&f.length){
     cam.lastFace=now;
     if(calib.active){ if(calib.phase==='collect'){calib.X.push(f);calib.Y.push(CAL_PTS[calib.idx]);} }
     else{
@@ -649,14 +692,59 @@ function activate(action,el){
     case 'color': {const i=COLORS.findIndex(c=>c.id===st.color);st.color=COLORS[(i+1)%COLORS.length].id;break;}
     case 'sym': {const i=SYMS.findIndex(s=>s.n===st.sym);st.sym=SYMS[(i+1)%SYMS.length].n;break;}
     case 'pause': paused=!paused; break;
+    case 'undo': histUndo(); break;
+    case 'redo': histRedo(); break;
+    case 'erase': st.eraser=!st.eraser; break;
+    case 'reset': doReset(); break;
   }
+  if(action==='brush'||action==='color'||action==='sym') st.eraser=false;
   persist(); renderUI();
 }
 document.querySelectorAll('[data-dwell]').forEach(el=>el.addEventListener('click',()=>{if(el.dataset.dwell==='start') ensureAudio(); activate(el.dataset.dwell,el);}));
 
 function start(){
   started=true; welcome.hidden=true; particles=[]; fillBg();
-  heat.data.fill(0); heat.time=0; renderUI();
+  heat.data.fill(0); heat.time=0; histInit(); renderUI();
+}
+
+/* ---------- history: もどる / すすむ ---------- */
+const hist={stack:[],idx:-1,dirty:false,drawing:false,lastPush:0,gapTimer:null,chain:Promise.resolve(),MAX:40};
+const snapBlob=()=>new Promise(res=>{try{art.toBlob(b=>res(b),'image/png');}catch(e){res(null);}});
+function histQueue(fn){hist.chain=hist.chain.then(fn).catch(()=>{});return hist.chain;}
+function histPush(){
+  hist.dirty=false; hist.lastPush=performance.now();
+  return histQueue(async()=>{
+    const b=await snapBlob(); if(!b) return;
+    hist.stack.length=hist.idx+1; hist.stack.push(b);
+    if(hist.stack.length>hist.MAX) hist.stack.shift();
+    hist.idx=hist.stack.length-1; renderHistUI();
+  });
+}
+function histInit(){hist.stack=[];hist.idx=-1;hist.dirty=false;clearTimeout(hist.gapTimer);hist.gapTimer=null;histPush();}
+function histFlush(){ if(hist.gapTimer){clearTimeout(hist.gapTimer);hist.gapTimer=null;} if(hist.dirty) return histPush(); return hist.chain; }
+async function histRestore(){
+  const b=hist.stack[hist.idx]; if(!b) return;
+  let img=null; try{img=await createImageBitmap(b);}catch(e){}
+  if(!img) return;
+  particles=[]; ax.save();ax.setTransform(1,0,0,1,0,0);ax.globalAlpha=1;ax.globalCompositeOperation='source-over';
+  ax.clearRect(0,0,art.width,art.height); ax.drawImage(img,0,0,art.width,art.height); ax.restore();
+  try{img.close();}catch(e){}
+}
+function histUndo(){ histFlush(); histQueue(async()=>{ if(hist.idx>0){hist.idx--; await histRestore();} renderHistUI(); }); }
+function histRedo(){ histFlush(); histQueue(async()=>{ if(hist.idx<hist.stack.length-1){hist.idx++; await histRestore();} renderHistUI(); }); }
+function histTrack(drawingNow,t){
+  if(drawingNow){
+    if(hist.gapTimer){clearTimeout(hist.gapTimer);hist.gapTimer=null;}
+    hist.dirty=true;
+    if(t-hist.lastPush>4000) histPush();
+  }else if(hist.drawing&&hist.dirty&&!hist.gapTimer){
+    hist.gapTimer=setTimeout(()=>{hist.gapTimer=null; if(hist.dirty) histPush();},900);
+  }
+  hist.drawing=drawingNow;
+}
+function doReset(){ histFlush(); histQueue(async()=>{ particles=[]; fillBg(); }).then(()=>histPush()); }
+function renderHistUI(){
+  $('tbUndo').classList.toggle('off',!(hist.idx>0)); $('tbRedo').classList.toggle('off',!(hist.idx<hist.stack.length-1));
 }
 
 /* ---------- main loop ---------- */
@@ -685,10 +773,11 @@ function frame(t){
     let s=dwellState.get(el); if(!s){s={p:0,cool:0};dwellState.set(el,s);}
     const hit=inside&&ui.x>r.left-10&&ui.x<r.right+10&&ui.y>r.top-10&&ui.y<r.bottom+10;
     if(s.cool>0) s.cool-=dt;
-    if(hit&&s.cool<=0){s.p+=dt/(st.dwell*1000); if(s.p>=1){s.p=0;s.cool=900;activate(el.dataset.dwell,el);}}
+    const dwellOK=!(isCam()&&st.select==='blink');
+    if(hit&&s.cool<=0&&dwellOK){s.p+=dt/(st.dwell*1000); if(s.p>=1){s.p=0;s.cool=900;activate(el.dataset.dwell,el);}}
     else s.p=Math.max(0,s.p-dt/250);
     el.classList.toggle('hot',hit);
-    el.style.setProperty('--p',s.p.toFixed(3));
+    el.style.setProperty('--p',(hit&&blink.prog>0?Math.max(s.p,blink.prog):s.p).toFixed(3));
   }
 
   const canDraw=started&&!paused&&inside&&!overUI&&!panelOpen&&!modalOpen;
@@ -705,13 +794,17 @@ function frame(t){
     const I={dist,speed:dist/f,dt,still,dwell:Math.min(dwell,3500),bloom:Math.min(dwell,3000)/3000*st.size*.9,emitted:false};
     hue+=dist*.12+dt*.012;
     const va=variants(prev),vb=variants(sm),pairs=va.map((a,i)=>[a,vb[i]]);
-    ax.save(); DRAW[st.brush](pairs,I); ax.restore();
+    ax.save();
+    if(st.eraser){ax.lineCap='round';ax.lineJoin='round';ax.strokeStyle=bgObj().c;ax.lineWidth=st.size*1.6;for(const [a,b] of pairs){ax.beginPath();ax.moveTo(a.x,a.y);ax.lineTo(b.x,b.y);ax.stroke();}}
+    else DRAW[st.brush](pairs,I);
+    ax.restore();
     soundDist+=dist;
     if(I.emitted||soundDist>160){soundDist=0;tone(sm.y);}
     // heat map
     const cx=Math.min(heat.cols-1,Math.max(0,Math.floor(sm.x/W*heat.cols))), cy=Math.min(heat.rows-1,Math.max(0,Math.floor(sm.y/H*heat.rows)));
     heat.data[cy*heat.cols+cx]+=dt; heat.time+=dt;
   }else{flowerActive=false;}
+  if(started) histTrack(canDraw,t);
   updateParticles();
   prev.x=sm.x;prev.y=sm.y;
 
@@ -721,7 +814,9 @@ function frame(t){
   if(st.cursor&&inside&&started&&!panelOpen&&!modalOpen){
     const R=st.size*.55+8+(dwell>220&&!overUI?Math.min(dwell,3000)/3000*8:0);
     ox.strokeStyle=bgObj().dark?'rgba(255,255,255,.55)':'rgba(20,20,40,.5)';ox.lineWidth=2;
-    circle(ox,sm.x,sm.y,R);ox.stroke();
+    if(st.eraser){ox.setLineDash([6,5]);circle(ox,sm.x,sm.y,st.size*.8);ox.stroke();ox.setLineDash([]);}
+    else{circle(ox,sm.x,sm.y,R);ox.stroke();}
+    if(blink.prog>0){ox.strokeStyle='#ffd23f';ox.lineWidth=5;ox.beginPath();ox.arc(sm.x,sm.y,R+8,-Math.PI/2,-Math.PI/2+Math.PI*2*blink.prog);ox.stroke();}
     ox.fillStyle=col(.9);circle(ox,sm.x,sm.y,3.5);ox.fill();
   }
   requestAnimationFrame(frame);
@@ -746,15 +841,26 @@ function device(){
 function fitToolbar(){
   const d=device(), sel=TBS.find(s=>s.id===st.tbsize)||TBS[0];
   let b=sel.px||d.auto;
-  const gap=(innerWidth<=600||innerHeight<=500)?10:16, pad=gap*2, margin=28, n=4;
+  const tb=$('toolbar'), n=Math.max(1,[...tb.querySelectorAll('.dw')].filter(x=>!x.hidden).length);
+  const gap=(innerWidth<=600||innerHeight<=500)?10:16, pad=gap*2, margin=28;
   const vertical=st.pos==='left'||st.pos==='right';
-  const room=(vertical?innerHeight:innerWidth)-margin-pad-gap*(n-1)-14;
-  b=Math.max(52,Math.min(b,Math.floor(room/n)));
+  const room=(vertical?innerHeight:innerWidth)-margin-pad-14;
+  const fit=k=>Math.floor((room-gap*(k-1))/k);
+  const want=b; let per=n; b=Math.min(want,fit(n));
+  if(b<Math.min(want,80)&&n>4){per=Math.ceil(n/2); b=Math.min(want,fit(per));}
+  b=Math.max(52,b);
+  tb.style.gap=gap+'px'; tb.style.padding=gap+'px';
+  tb.style.gridAutoFlow='row'; tb.style.gridTemplateRows='';
+  tb.style.gridTemplateColumns=vertical?(per<n?'repeat(2,auto)':'auto'):`repeat(${per},auto)`;
+  tb.style.borderRadius=per<n?`${Math.round(b/2+gap)}px`:'999px';
   document.documentElement.style.setProperty('--bsize',b+'px');
   const el=$('deviceInfo'); if(el) el.textContent=`この画面：${d.name}（${innerWidth}×${innerHeight}）→ ボタン ${b}px`+(b<(sel.px||d.auto)?'（画面に収まるよう縮小）':'');
 }
 
 /* ---------- UI rendering ---------- */
+const TBMAP=[['brush','tbBrush'],['color','tbColor'],['sym','tbSym'],['erase','tbErase'],['undo','tbUndo'],['redo','tbRedo'],['reset','tbReset'],['pause','tbPause']];
+const TBNAME={brush:'ふで',color:'いろ',sym:'もよう',undo:'もどる',redo:'すすむ',erase:'けす',reset:'リセット',pause:'やすむ'};
+const SELECTS=[{id:'both',name:'見つめる・まばたき どちらでも'},{id:'dwell',name:'見つめる'},{id:'blink',name:'ゆっくりまばたき'}];
 const svgWrap=inner=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`;
 const SYM_SVG=n=>{let s='';const m=n===1?1:n;for(let i=0;i<m;i++){const a=Math.PI*2*i/m-Math.PI/2;s+=`<line x1="12" y1="12" x2="${(12+9*Math.cos(a)).toFixed(1)}" y2="${(12+9*Math.sin(a)).toFixed(1)}"/>`;}if(n===1)s='<circle cx="12" cy="12" r="6"/>';if(n===2)s='<line x1="12" y1="3" x2="12" y2="21" stroke-dasharray="2 3"/><path d="M9 8l-4 4 4 4M15 8l4 4-4 4"/>';if(n===4)s='<line x1="12" y1="3" x2="12" y2="21" stroke-dasharray="2 3"/><line x1="3" y1="12" x2="21" y2="12" stroke-dasharray="2 3"/><circle cx="7" cy="7" r="2"/><circle cx="17" cy="7" r="2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/>';return s;};
 function chips(container,items,isOn,onPick,dot){
@@ -783,6 +889,14 @@ function renderUI(){
   $('tbPause').querySelector('.ic').innerHTML=svgWrap(paused?'<path d="M8 5l11 7-11 7z" fill="currentColor"/>':'<line x1="9" y1="6" x2="9" y2="18" stroke-width="3"/><line x1="15" y1="6" x2="15" y2="18" stroke-width="3"/>');
   $('tbPause').querySelector('.lb').textContent=paused?'つづける':'やすむ';
   $('pauseBadge').hidden=!(paused&&started);
+  $('tbUndo').querySelector('.ic').innerHTML=svgWrap('<path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>');
+  $('tbRedo').querySelector('.ic').innerHTML=svgWrap('<path d="M15 14l5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/>');
+  $('tbErase').querySelector('.ic').innerHTML=svgWrap('<path d="M20 20H9l-5.3-5.3a1.8 1.8 0 0 1 0-2.6l8.2-8.2a1.8 1.8 0 0 1 2.6 0l5.6 5.6a1.8 1.8 0 0 1 0 2.6L13 19"/><path d="M7.5 9.5l7 7"/>');
+  $('tbErase').classList.toggle('on',!!st.eraser); $('tbErase').querySelector('.lb').textContent=st.eraser?'けし中':'けす';
+  $('tbErase').setAttribute('aria-pressed',st.eraser?'true':'false');
+  $('tbReset').querySelector('.ic').innerHTML=svgWrap('<path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1L3.5 8.5"/><path d="M3.5 3.5v5h5"/>');
+  for(const [k,id] of TBMAP) $(id).hidden=!(st.tbShow&&st.tbShow[k]!==false);
+  renderHistUI();
   const tb=$('toolbar'); tb.className='pos-'+st.pos;
   fitToolbar();
   document.body.classList.toggle('hide-cursor',st.cursor&&started);
@@ -798,9 +912,13 @@ function renderUI(){
   chips('chipsBrush',BRUSHES,b=>b.id===st.brush,b=>st.brush=b.id);
   chips('chipsColor',COLORS.map(c=>c.id==='mono'?Object.assign({},c,{name:bgObj().dark?'しろ':'くろ'}):c),c=>c.id===st.color,c=>st.color=c.id,c=>swatchCss(c.id));
   chips('chipsSym',SYMS,s=>s.n===st.sym,s=>st.sym=s.n);
+  chips('chipsTbShow',TBMAP.map(([k,id])=>({k,name:TBNAME[k]})),x=>st.tbShow[x.k]!==false,x=>{st.tbShow={...st.tbShow,[x.k]:!(st.tbShow[x.k]!==false)};});
+  chips('chipsSelect',SELECTS,x=>x.id===st.select,x=>st.select=x.id);
+  $('blinkRow').hidden=st.select==='dwell';
+  $('rBlink').value=(st.blinkMs/1000).toFixed(1); $('oBlink').textContent=(st.blinkMs/1000).toFixed(1)+' 秒';
   chips('chipsPos',POS,p=>p.id===st.pos,p=>st.pos=p.id);
   chips('chipsTbSize',TBS,s=>s.id===st.tbsize,s=>st.tbsize=s.id);
-  chips('chipsBg',BGS,b=>b.id===st.bg,b=>{if(st.bg!==b.id){st.bg=b.id;particles=[];fillBg();}},b=>b.c);
+  chips('chipsBg',BGS,b=>b.id===st.bg,b=>{if(st.bg!==b.id){st.bg=b.id;particles=[];fillBg();if(started) histInit();}},b=>b.c);
 
   $('rSize').value=st.size;$('oSize').textContent=st.size+' px';
   $('rSmooth').value=st.smooth;$('oSmooth').textContent=st.smooth===0?'なし':'強さ '+st.smooth;
@@ -838,6 +956,7 @@ $('tCursor').addEventListener('change',e=>{st.cursor=e.target.checked;persist();
 $('tSound').addEventListener('change',e=>{st.sound=e.target.checked;if(st.sound){ensureAudio();setTimeout(()=>tone(H*.3,.05),60);}persist();renderUI();});
 $('tHeat').addEventListener('change',e=>{st.heat=e.target.checked;persist();renderUI();});
 $('bCalib').addEventListener('click',startCalib);
+$('rBlink').addEventListener('input',e=>{st.blinkMs=Math.round(+e.target.value*1000);persist();renderUI();});
 $('camSelect').addEventListener('change',e=>{st.camId=e.target.value;persist();if(isCam()){stopCamera();startCamera();}});
 $('tPreview').addEventListener('change',e=>{st.preview=e.target.checked;persist();renderUI();});
 $('bResetStats').addEventListener('click',()=>{heat.data.fill(0);heat.time=0;renderStats();});
@@ -847,14 +966,14 @@ let armTimer=null;
 function disarm(){const b=$('bClear');b.classList.remove('armed');b.textContent='まっさらにする';clearTimeout(armTimer);}
 $('bClear').addEventListener('click',()=>{
   const b=$('bClear');
-  if(b.classList.contains('armed')){particles=[];fillBg();disarm();b.textContent='消しました';setTimeout(disarm,1200);return;}
+  if(b.classList.contains('armed')){doReset();disarm();b.textContent='消しました';setTimeout(disarm,1200);return;}
   b.classList.add('armed');b.textContent='もう一度押すと消えます';armTimer=setTimeout(disarm,4000);
 });
 
 
 /* ---------- records: trial (this device) / school GAS ---------- */
 const GAS=(typeof google!=='undefined'&&google.script&&google.script.run)?google.script.run:null;
-const DIST_ZIP='manazashi-atelier_v1.2.0_public.zip';
+const DIST_ZIP='manazashi-atelier_v1.3.0_public.zip';
 const CAP=80, WARN=60;
 let gasConfig=null, lastAskAt=0, saveBusy=false;
 if(GAS){try{GAS.withSuccessHandler(c=>{gasConfig=c;renderRecUI();}).withFailureHandler(()=>{}).getConfig();}catch(e){}}
@@ -1088,6 +1207,10 @@ addEventListener('keydown',e=>{
   else if(k==='f'){toggleFull();}
   else if(k==='c'){activate('color',$('tbColor'));}
   else if(k==='b'){activate('brush',$('tbBrush'));}
+  else if(k==='z'&&!e.shiftKey){if(started) activate('undo',$('tbUndo'));}
+  else if(k==='y'||(k==='z'&&e.shiftKey)){if(started) activate('redo',$('tbRedo'));}
+  else if(k==='e'){if(started) activate('erase',$('tbErase'));}
+  else if(k==='r'){if(started) activate('reset',$('tbReset'));}
   else if(k==='escape'){if(calib.active) calibCancel(); else if(!$('askBox').hidden) $('askBox').hidden=true; else if(!$('recModal').hidden) $('recModal').hidden=true; else if(!saveModal.hidden) saveModal.hidden=true; else if(!panel.hidden) closePanel();}
 });
 
