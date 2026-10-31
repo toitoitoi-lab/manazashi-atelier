@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>まなざしアトリエ</title>
-<meta name="description" content="視線入力（マウスエミュレーション）で、見つめたところに色が広がるお絵描きアプリ v1.4.1">
+<meta name="description" content="視線入力（マウスエミュレーション）で、見つめたところに色が広がるお絵描きアプリ v1.5.0">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&family=BIZ+UDPGothic:wght@400;700&display=swap">
@@ -130,6 +130,7 @@ kbd{font-family:var(--font-body);border:1px solid var(--ui-line);border-radius:5
 .meter span.warn{background:#e8a317} .meter span.full{background:var(--danger)}
 .txt{grid-column:1/-1;width:100%;font:inherit;font-size:15px;padding:9px 10px;border-radius:10px;border:1.5px solid var(--ui-line);background:var(--ui-bg);color:var(--ui-fg)}
 a.btn{text-decoration:none;display:inline-block}
+#bigToast{position:fixed;z-index:6;left:50%;top:50%;transform:translate(-50%,-50%);padding:18px 34px;border-radius:24px;background:rgba(14,16,38,.82);color:#fff;font-family:var(--font-display);font-weight:700;font-size:clamp(28px,6vw,56px);letter-spacing:.06em;pointer-events:none;white-space:nowrap}
 #picker{position:fixed;inset:0;z-index:7;display:grid;place-items:center;background:rgba(5,7,20,.94);padding-inline:16px}
 .pk-box{display:grid;gap:18px;justify-items:center}
 #pkTitle{margin:0;color:#f2f1fa;font-family:var(--font-display);font-weight:700;font-size:clamp(20px,3vw,30px);letter-spacing:.06em}
@@ -159,6 +160,7 @@ a.btn{text-decoration:none;display:inline-block}
 </div>
 
 <div id="pauseBadge" hidden>ひとやすみ中</div>
+<div id="bigToast" hidden aria-live="polite"></div>
 
 <div id="picker" hidden role="dialog" aria-labelledby="pkTitle">
   <div class="pk-box">
@@ -201,9 +203,16 @@ a.btn{text-decoration:none;display:inline-block}
     <p class="hint" id="inputHint"></p>
   </section>
 
-  <section class="sec"><h3>ふで</h3><div class="chips" id="chipsBrush"></div></section>
-  <section class="sec"><h3>いろ</h3><div class="chips" id="chipsColor"></div></section>
-  <section class="sec"><h3>もよう（対称）</h3><div class="chips" id="chipsSym"></div></section>
+  <section class="sec"><h3>ふで</h3><div class="chips" id="chipsBrush"></div><h3 style="margin-top:12px">一覧・順番に出すふで</h3><div class="chips" id="chipsShowBrush"></div></section>
+  <section class="sec"><h3>いろ</h3><div class="chips" id="chipsColor"></div><h3 style="margin-top:12px">一覧・順番に出すいろ</h3><div class="chips" id="chipsShowColor"></div></section>
+  <section class="sec"><h3>もよう（対称）</h3><div class="chips" id="chipsSym"></div><h3 style="margin-top:12px">一覧・順番に出すもよう</h3><div class="chips" id="chipsShowSym"></div><p class="hint">一覧や順番に出すものを2〜3にしぼると、ボタンが大きくなり、選びやすくなります。</p></section>
+
+  <section class="sec"><h3>ペンの上げ下げ</h3>
+    <div class="chips" id="chipsPen"></div>
+    <div class="row" id="penRow" style="margin-top:10px"><label for="rPen">描きはじめるまで見つめる時間</label><output id="oPen"></output><input type="range" id="rPen" min="0.5" max="2" step="0.1"></div>
+    <p class="hint" id="penHint"></p>
+    <p class="hint" id="headIdea">顔の向きで描く人へ：ペンを上げる・下ろす合図に、どんな動きが使いやすいか、まだ分かっていません。アイデアがあれば <a href="https://toitoitoi-lab.github.io/contact/" target="_blank" rel="noopener">toi toi toi lab のお問い合わせ</a> から教えてください。</p>
+  </section>
 
   <section class="sec"><h3>描き心地</h3>
     <div class="row"><label for="rSize">ふでの大きさ</label><output id="oSize"></output><input type="range" id="rSize" min="8" max="90" step="1"></div>
@@ -272,7 +281,7 @@ a.btn{text-decoration:none;display:inline-block}
   <section class="sec"><h3>キーボード</h3>
     <p class="keys"><kbd>Space</kbd> やすむ／つづける　<kbd>H</kbd> 設定　<kbd>S</kbd> 画像にする　<kbd>F</kbd> 全画面　<kbd>C</kbd> 色を切り替え　<kbd>B</kbd> ふでを切り替え　<kbd>Z</kbd> もどる　<kbd>Y</kbd> すすむ　<kbd>E</kbd> けす　<kbd>R</kbd> リセット</p>
   </section>
-  <p class="ver">まなざしアトリエ v1.4.1 public</p>
+  <p class="ver">まなざしアトリエ v1.5.0 public</p>
 </aside>
 
 <video id="camVideo" class="off" playsinline muted></video>
@@ -317,7 +326,7 @@ a.btn{text-decoration:none;display:inline-block}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
 (()=>{
-const VERSION='1.4.1';
+const VERSION='1.5.0';
 const BRUSHES=[
   {id:'fude',name:'ふで',svg:'<path d="M3 17c4-8 7 4 11-4s5-6 7-6" stroke-width="3"/>'},
   {id:'pencil',name:'いろえんぴつ',svg:'<path d="M4 17l4-4M7 18l6-6M11 18l8-8M14 15l5-5" stroke-width="1.3"/>'},
@@ -343,10 +352,11 @@ const INPUT_HINT={pointer:'視線入力装置（マウスモード）、マウ�
 const POS=[{id:'left',name:'ボタン：左'},{id:'right',name:'右'},{id:'bottom',name:'下'},{id:'top',name:'上'},{id:'off',name:'なし'}];
 const TBS=[{id:'auto',name:'ボタン：自動'},{id:'s',name:'小',px:80},{id:'m',name:'中',px:104},{id:'l',name:'大',px:136}];
 
-const DEF={pickMode:'list',tbShow:{brush:true,color:true,sym:true,undo:true,redo:true,erase:true,reset:true,pause:true},select:'both',blinkMs:800,eraser:false,input:'pointer',camId:'',learner:'',saveMode:'download',brush:'bubbles',color:'rainbow',sym:1,size:30,smooth:6,dwell:1.5,pos:'left',tbsize:'auto',fade:false,fadeSpeed:3,cursor:true,sound:false,bg:'night',heat:false};
+const DEF={penSignal:'dwell',penMs:1000,pickShow:{brush:{},color:{},sym:{}},pickMode:'list',tbShow:{brush:true,color:true,sym:true,undo:true,redo:true,erase:true,reset:true,pause:true},select:'both',blinkMs:800,eraser:false,input:'pointer',camId:'',learner:'',saveMode:'download',brush:'bubbles',color:'rainbow',sym:1,size:30,smooth:6,dwell:1.5,pos:'left',tbsize:'auto',fade:false,fadeSpeed:3,cursor:true,sound:false,bg:'night',heat:false};
 let st=Object.assign({},DEF);
 try{const s=JSON.parse(localStorage.getItem('manazashi-atelier')||'null'); if(s) st=Object.assign(st,s);}catch(e){}
 st.tbShow=Object.assign({},DEF.tbShow,st.tbShow||{});
+st.pickShow=Object.assign({brush:{},color:{},sym:{}},st.pickShow||{});
 // 開いたときは毎回「しゃぼん玉・にじ・もようなし・消しゴムオフ」から始める
 st.brush=DEF.brush; st.color=DEF.color; st.sym=1; st.eraser=false;
 function persist(){try{localStorage.setItem('manazashi-atelier',JSON.stringify(st));}catch(e){}}
@@ -676,7 +686,7 @@ function blinkScore(res){
 }
 const blinkOn=()=>isCam()&&(st.select==='blink'||st.select==='both');
 function blinkTick(now,score){
-  if(!blinkOn()||calib.active){blink.closedAt=0;blink.prog=0;return;}
+  if(!(blinkOn()||st.penSignal==='blink')||!isCam()||calib.active){blink.closedAt=0;blink.prog=0;return;}
   if(score>.45){
     if(!blink.closedAt) blink.closedAt=now;
     blink.prog=Math.min(1,(now-blink.closedAt)/st.blinkMs);
@@ -688,8 +698,9 @@ function blinkSelect(){
   if(panelOpen||modalOpen) return;
   for(const el of dwellTargets()){
     const r=el.getBoundingClientRect();
-    if(ui.x>r.left-10&&ui.x<r.right+10&&ui.y>r.top-10&&ui.y<r.bottom+10){activate(el.dataset.dwell,el);return;}
+    if(ui.x>r.left-10&&ui.x<r.right+10&&ui.y>r.top-10&&ui.y<r.bottom+10){ if(blinkOn()) activate(el.dataset.dwell,el); return; }
   }
+  if(st.penSignal==='blink'&&started&&!pickerOpen()) togglePen();
 }
 function camTick(now){
   if(!isCam()||!cam.ready||!cam.video||cam.video.readyState<2) return;
@@ -736,7 +747,7 @@ function activate(action,el){
       cycle(action); break;
     case 'pick': {const k=el.dataset.kind,v=el.dataset.val; if(k==='brush') st.brush=v; else if(k==='color') st.color=v; else st.sym=+v; st.eraser=false; closePicker(); break;}
     case 'pickclose': closePicker(); break;
-    case 'pause': paused=!paused; break;
+    case 'pause': paused=!paused; penUp(); break;
     case 'undo': histUndo(); break;
     case 'redo': histRedo(); break;
     case 'erase': st.eraser=!st.eraser; break;
@@ -745,19 +756,31 @@ function activate(action,el){
   if(action==='brush'||action==='color'||action==='sym') st.eraser=false;
   persist(); renderUI();
 }
+const shown=(kind)=>{const L=kind==='brush'?BRUSHES.map(b=>b.id):kind==='color'?COLORS.map(c=>c.id):SYMS.map(x=>String(x.n));const m=(st.pickShow&&st.pickShow[kind])||{};const r=L.filter(v=>m[v]!==false);return r.length?r:L;};
 function cycle(kind){
-  if(kind==='brush'){const i=BRUSHES.findIndex(b=>b.id===st.brush);st.brush=BRUSHES[(i+1)%BRUSHES.length].id;}
-  else if(kind==='color'){const i=COLORS.findIndex(c=>c.id===st.color);st.color=COLORS[(i+1)%COLORS.length].id;}
-  else {const i=SYMS.findIndex(s=>s.n===st.sym);st.sym=SYMS[(i+1)%SYMS.length].n;}
+  const L=shown(kind), curV=kind==='brush'?st.brush:kind==='color'?st.color:String(st.sym);
+  const v=L[(L.indexOf(curV)+1)%L.length];
+  if(kind==='brush') st.brush=v; else if(kind==='color') st.color=v; else st.sym=+v;
+  penUp();
+  const name=kind==='brush'?BRUSHES.find(b=>b.id===v).name:kind==='color'?(v==='mono'?(bgObj().dark?'しろ':'くろ'):COLORS.find(c=>c.id===v).name):SYMS.find(x=>String(x.n)===v).name;
+  bigToast(name);
 }
+let toastT=null;
+function bigToast(text){const t=$('bigToast');t.textContent=text;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,1300);}
+/* ペンの上げ下げ */
+let penDown=false, penProg=0;
+const penNeeded=()=>st.penSignal!=='none';
+function penUp(){ if(penNeeded()) penDown=false; penProg=0; }
+function togglePen(){ if(!penNeeded()) return; penDown=!penDown; penProg=0; dwell=0; anchor={x:sm.x,y:sm.y}; tone(penDown?H*.25:H*.75,.05); }
 /* 一覧から選ぶ（見つめると開く） */
 function openPicker(kind){
   const T={brush:'ふでを えらぶ',color:'いろを えらぶ',sym:'もようを えらぶ'};
   $('pkTitle').textContent=T[kind];
   let items=[];
-  if(kind==='brush') items=BRUSHES.map(b=>({v:b.id,name:b.name,ic:svgWrap(b.svg),cur:b.id===st.brush}));
-  else if(kind==='color') items=COLORS.map(c=>({v:c.id,name:c.id==='mono'?(bgObj().dark?'しろ':'くろ'):c.name,sw:swatchCss(c.id),cur:c.id===st.color}));
-  else items=SYMS.map(x=>({v:String(x.n),name:x.name,ic:svgWrap(SYM_SVG(x.n)),cur:x.n===st.sym}));
+  const SH=new Set(shown(kind));
+  if(kind==='brush') items=BRUSHES.filter(b=>SH.has(b.id)).map(b=>({v:b.id,name:b.name,ic:svgWrap(b.svg),cur:b.id===st.brush}));
+  else if(kind==='color') items=COLORS.filter(c=>SH.has(c.id)).map(c=>({v:c.id,name:c.id==='mono'?(bgObj().dark?'しろ':'くろ'):c.name,sw:swatchCss(c.id),cur:c.id===st.color}));
+  else items=SYMS.filter(x=>SH.has(String(x.n))).map(x=>({v:String(x.n),name:x.name,ic:svgWrap(SYM_SVG(x.n)),cur:x.n===st.sym}));
   const g=$('pkGrid'); g.innerHTML='';
   for(const it of items){
     const b=document.createElement('button'); b.className='dw'+(it.cur?' cur':''); b.type='button';
@@ -781,12 +804,13 @@ function openPicker(kind){
   for(const el of g.querySelectorAll('[data-dwell]')) dwellState.set(el,{p:0,cool:700});
   $('picker').hidden=false; $('toolbar').style.visibility='hidden';
 }
-function closePicker(){ $('picker').hidden=true; $('toolbar').style.visibility=''; $('pkGrid').innerHTML=''; for(const el of $('toolbar').querySelectorAll('.dw')){const s=dwellState.get(el); if(s){s.p=0;s.cool=900;}} }
+function closePicker(){ penUp(); $('picker').hidden=true; $('toolbar').style.visibility=''; $('pkGrid').innerHTML=''; for(const el of $('toolbar').querySelectorAll('.dw')){const s=dwellState.get(el); if(s){s.p=0;s.cool=900;}} }
 document.querySelectorAll('[data-dwell]').forEach(el=>el.addEventListener('click',()=>{if(el.dataset.dwell==='start') ensureAudio(); activate(el.dataset.dwell,el);}));
 
 function start(){
   started=true; welcome.hidden=true; particles=[]; fillBg();
-  heat.data.fill(0); heat.time=0; histInit(); renderUI();
+  heat.data.fill(0); heat.time=0; histInit(); penUp(); renderUI();
+  if(st.penSignal==='dwell') bigToast('かきたい ところを じっと みてね');
 }
 
 /* ---------- history: もどる / すすむ ---------- */
@@ -863,7 +887,9 @@ function frame(t){
     el.style.setProperty('--p',(hit&&blink.prog>0?Math.max(s.p,blink.prog):s.p).toFixed(3));
   }
 
-  const canDraw=started&&!paused&&inside&&!overUI&&!overUIPick&&!panelOpen&&!modalOpen;
+  const onCanvas=started&&!paused&&inside&&!overUI&&!overUIPick&&!panelOpen&&!modalOpen;
+  if(!onCanvas&&penNeeded()&&started) {penDown=false;}
+  const canDraw=onCanvas&&(!penNeeded()||penDown);
 
   // fade
   if(st.fade&&started){ax.save();ax.globalAlpha=.0025*st.fadeSpeed*f;ax.fillStyle=bgObj().c;ax.fillRect(0,0,W,H);ax.restore();}
@@ -871,6 +897,8 @@ function frame(t){
   const dist=Math.hypot(sm.x-prev.x,sm.y-prev.y);
   // dwell (still) detection, tolerant of gaze jitter
   if(Math.hypot(sm.x-anchor.x,sm.y-anchor.y)>st.size*.6+6){anchor={x:sm.x,y:sm.y};dwell=0;} else dwell+=dt;
+  // 見つめてペンを下ろす
+  if(onCanvas&&st.penSignal==='dwell'&&!penDown){ penProg=Math.min(1,dwell/st.penMs); if(penProg>=1){penDown=true;penProg=0;dwell=0;anchor={x:sm.x,y:sm.y};tone(H*.25,.05);} } else if(st.penSignal==='dwell'&&!penDown) penProg=0;
 
   if(canDraw){
     const still=dwell>220;
@@ -894,10 +922,13 @@ function frame(t){
   // overlay
   ox.clearRect(0,0,W,H);
   if(st.heat&&started) drawHeat();
-  if(st.cursor&&inside&&started&&!panelOpen&&!modalOpen){
-    const R=st.size*.55+8+(dwell>220&&!overUI?Math.min(dwell,3000)/3000*8:0);
+  const lifted=penNeeded()&&!penDown&&started;
+  if((st.cursor||lifted)&&inside&&started&&!panelOpen&&!modalOpen&&!pickerOpen()){
+    const R=st.size*.55+8+(dwell>220&&!overUI&&!lifted?Math.min(dwell,3000)/3000*8:0);
     ox.strokeStyle=bgObj().dark?'rgba(255,255,255,.55)':'rgba(20,20,40,.5)';ox.lineWidth=2;
-    if(st.eraser){ox.setLineDash([6,5]);circle(ox,sm.x,sm.y,st.size*.8);ox.stroke();ox.setLineDash([]);}
+    if(lifted){ox.strokeStyle=bgObj().dark?'rgba(255,255,255,.8)':'rgba(20,20,40,.7)';ox.setLineDash([3,6]);circle(ox,sm.x,sm.y,R);ox.stroke();ox.setLineDash([]);
+      if(penProg>0){ox.strokeStyle='#ffd23f';ox.lineWidth=5;ox.beginPath();ox.arc(sm.x,sm.y,R,-Math.PI/2,-Math.PI/2+Math.PI*2*penProg);ox.stroke();}}
+    else if(st.eraser){ox.setLineDash([6,5]);circle(ox,sm.x,sm.y,st.size*.8);ox.stroke();ox.setLineDash([]);}
     else{circle(ox,sm.x,sm.y,R);ox.stroke();}
     if(blink.prog>0){ox.strokeStyle='#ffd23f';ox.lineWidth=5;ox.beginPath();ox.arc(sm.x,sm.y,R+8,-Math.PI/2,-Math.PI/2+Math.PI*2*blink.prog);ox.stroke();}
     ox.fillStyle=col(.9);circle(ox,sm.x,sm.y,3.5);ox.fill();
@@ -941,6 +972,8 @@ function fitToolbar(){
 }
 
 /* ---------- UI rendering ---------- */
+const PENS=[{id:'dwell',name:'見つめて下ろす'},{id:'blink',name:'ゆっくりまばたき'},{id:'click',name:'クリック・スイッチ'},{id:'none',name:'合図なし（見ればすぐ描く）'}];
+const PEN_HINT={dwell:'描きたい場所をじっと見つめると、ペンが下りて描きはじめます。ボタンの所へ目を移すとペンが上がります。ペンが上がっている間は、点線の輪だけが動きます。',blink:'目をゆっくりとじるたびに、ペンが下りる・上がるが切り替わります。ボタンの所へ目を移したときも、ペンが上がります。',click:'クリック、外付けスイッチ、Enter キーで、ペンが下りる・上がるが切り替わります。視線入力装置のまばたきクリックも使えます。',none:'見ているところに、すぐ描かれます（見る→色が出る、を知る段階向け）。'};
 const TBMAP=[['brush','tbBrush'],['color','tbColor'],['sym','tbSym'],['erase','tbErase'],['undo','tbUndo'],['redo','tbRedo'],['reset','tbReset'],['pause','tbPause']];
 const TBNAME={brush:'ふで',color:'いろ',sym:'もよう',undo:'もどる',redo:'すすむ',erase:'けす',reset:'リセット',pause:'やすむ'};
 const SELECTS=[{id:'both',name:'見つめる・まばたき どちらでも'},{id:'dwell',name:'見つめる'},{id:'blink',name:'ゆっくりまばたき'}];
@@ -993,6 +1026,15 @@ function renderUI(){
   $('camBox').hidden=!isCam(); $('inputHint').textContent=INPUT_HINT[st.input];
   $('tPreview').checked=!!st.preview; $('camVideo').classList.toggle('off',!(isCam()&&st.preview));
   chips('chipsBrush',BRUSHES,b=>b.id===st.brush,b=>st.brush=b.id);
+  const showChips=(id,kind,items)=>chips(id,items,x=>((st.pickShow[kind]||{})[x.v]!==false),x=>{const m={...(st.pickShow[kind]||{})};m[x.v]=(m[x.v]===false);const L=items.filter(i=>(i.v===x.v?m[x.v]:m[i.v])!==false);if(!L.length) return;st.pickShow={...st.pickShow,[kind]:m};});
+  showChips('chipsShowBrush','brush',BRUSHES.map(b=>({v:b.id,name:b.name})));
+  showChips('chipsShowColor','color',COLORS.map(c=>({v:c.id,name:c.id==='mono'?(bgObj().dark?'しろ':'くろ'):c.name})));
+  showChips('chipsShowSym','sym',SYMS.map(x=>({v:String(x.n),name:x.name})));
+  chips('chipsPen',PENS,x=>x.id===st.penSignal,x=>{st.penSignal=x.id;penUp();});
+  $('penRow').hidden=st.penSignal!=='dwell';
+  $('rPen').value=(st.penMs/1000).toFixed(1); $('oPen').textContent=(st.penMs/1000).toFixed(1)+' 秒';
+  $('penHint').textContent=PEN_HINT[st.penSignal]+(st.penSignal==='blink'&&!isCam()?'（入力方法をカメラにしたときに使えます）':'');
+  $('headIdea').style.fontWeight=st.input==='head'?'700':'';
   chips('chipsColor',COLORS.map(c=>c.id==='mono'?Object.assign({},c,{name:bgObj().dark?'しろ':'くろ'}):c),c=>c.id===st.color,c=>st.color=c.id,c=>swatchCss(c.id));
   chips('chipsSym',SYMS,s=>s.n===st.sym,s=>st.sym=s.n);
   chips('chipsTbShow',TBMAP.map(([k,id])=>({k,name:TBNAME[k]})),x=>st.tbShow[x.k]!==false,x=>{st.tbShow={...st.tbShow,[x.k]:!(st.tbShow[x.k]!==false)};});
@@ -1040,6 +1082,8 @@ $('tCursor').addEventListener('change',e=>{st.cursor=e.target.checked;persist();
 $('tSound').addEventListener('change',e=>{st.sound=e.target.checked;if(st.sound){ensureAudio();setTimeout(()=>tone(H*.3,.05),60);}persist();renderUI();});
 $('tHeat').addEventListener('change',e=>{st.heat=e.target.checked;persist();renderUI();});
 $('bCalib').addEventListener('click',startCalib);
+$('rPen').addEventListener('input',e=>{st.penMs=Math.round(+e.target.value*1000);persist();renderUI();});
+$('art').addEventListener('pointerdown',()=>{ if(st.penSignal==='click'&&started&&!paused) togglePen(); });
 $('rBlink').addEventListener('input',e=>{st.blinkMs=Math.round(+e.target.value*1000);persist();renderUI();});
 $('camSelect').addEventListener('change',e=>{st.camId=e.target.value;persist();if(isCam()){stopCamera();startCamera();}});
 $('tPreview').addEventListener('change',e=>{st.preview=e.target.checked;persist();renderUI();});
@@ -1057,7 +1101,7 @@ $('bClear').addEventListener('click',()=>{
 
 /* ---------- records: trial (this device) / school GAS ---------- */
 const GAS=(typeof google!=='undefined'&&google.script&&google.script.run)?google.script.run:null;
-const DIST_ZIP='manazashi-atelier_v1.4.1_public.zip';
+const DIST_ZIP='manazashi-atelier_v1.5.0_public.zip';
 const CAP=80, WARN=60;
 let gasConfig=null, lastAskAt=0, saveBusy=false;
 if(GAS){try{GAS.withSuccessHandler(c=>{gasConfig=c;renderRecUI();}).withFailureHandler(()=>{}).getConfig();}catch(e){}}
@@ -1295,6 +1339,7 @@ addEventListener('keydown',e=>{
   else if(k==='y'||(k==='z'&&e.shiftKey)){if(started) activate('redo',$('tbRedo'));}
   else if(k==='e'){if(started) activate('erase',$('tbErase'));}
   else if(k==='r'){if(started) activate('reset',$('tbReset'));}
+  else if(k==='enter'){if(started&&!paused) togglePen();}
   else if(k==='escape'){if(pickerOpen()) closePicker(); else if(calib.active) calibCancel(); else if(!$('askBox').hidden) $('askBox').hidden=true; else if(!$('recModal').hidden) $('recModal').hidden=true; else if(!saveModal.hidden) saveModal.hidden=true; else if(!panel.hidden) closePanel();}
 });
 
