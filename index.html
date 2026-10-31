@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>まなざしアトリエ</title>
-<meta name="description" content="視線入力（マウスエミュレーション）で、見つめたところに色が広がるお絵描きアプリ v1.3.0">
+<meta name="description" content="視線入力（マウスエミュレーション）で、見つめたところに色が広がるお絵描きアプリ v1.3.3">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&family=BIZ+UDPGothic:wght@400;700&display=swap">
@@ -255,7 +255,7 @@ a.btn{text-decoration:none;display:inline-block}
   <section class="sec"><h3>キーボード</h3>
     <p class="keys"><kbd>Space</kbd> やすむ／つづける　<kbd>H</kbd> 設定　<kbd>S</kbd> 画像にする　<kbd>F</kbd> 全画面　<kbd>C</kbd> 色を切り替え　<kbd>B</kbd> ふでを切り替え　<kbd>Z</kbd> もどる　<kbd>Y</kbd> すすむ　<kbd>E</kbd> けす　<kbd>R</kbd> リセット</p>
   </section>
-  <p class="ver">まなざしアトリエ v1.3.0 public</p>
+  <p class="ver">まなざしアトリエ v1.3.3 public</p>
 </aside>
 
 <video id="camVideo" class="off" playsinline muted></video>
@@ -300,9 +300,11 @@ a.btn{text-decoration:none;display:inline-block}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
 (()=>{
-const VERSION='1.3.0';
+const VERSION='1.3.3';
 const BRUSHES=[
-  {id:'crayon',name:'くれよん',svg:'<path d="M3 17c4-8 7 4 11-4s5-6 7-6" stroke-width="3"/>'},
+  {id:'fude',name:'ふで',svg:'<path d="M3 17c4-8 7 4 11-4s5-6 7-6" stroke-width="3"/>'},
+  {id:'sumi',name:'すみ',svg:'<path d="M4 17c3-6 7-2 10-6s4-4 6-5" stroke-width="3.6"/><circle cx="6" cy="7" r="2.6" fill="currentColor" stroke="none" opacity=".5"/>'},
+  {id:'pencil',name:'いろえんぴつ',svg:'<path d="M4 17l4-4M7 18l6-6M11 18l8-8M14 15l5-5" stroke-width="1.3"/>'},
   {id:'bubbles',name:'しゃぼん玉',svg:'<circle cx="8.5" cy="14" r="5"/><circle cx="16.5" cy="7.5" r="3.5"/><circle cx="18" cy="17" r="2.5"/>'},
   {id:'sparkle',name:'きらきら',svg:'<path d="M12 3l2 6.5 6.5 2.5-6.5 2.5L12 21l-2-6.5L3.5 12 10 9.5z"/>'},
   {id:'flower',name:'おはな',svg:'<circle cx="12" cy="6.5" r="3"/><circle cx="17.2" cy="10.3" r="3"/><circle cx="15.2" cy="16.5" r="3"/><circle cx="8.8" cy="16.5" r="3"/><circle cx="6.8" cy="10.3" r="3"/><circle cx="12" cy="12" r="1.6"/>'},
@@ -329,6 +331,8 @@ const DEF={tbShow:{brush:true,color:true,sym:true,undo:true,redo:true,erase:true
 let st=Object.assign({},DEF);
 try{const s=JSON.parse(localStorage.getItem('manazashi-atelier')||'null'); if(s) st=Object.assign(st,s);}catch(e){}
 st.tbShow=Object.assign({},DEF.tbShow,st.tbShow||{});
+// 開いたときは毎回「しゃぼん玉・にじ・もようなし・消しゴムオフ」から始める
+st.brush=DEF.brush; st.color=DEF.color; st.sym=1; st.eraser=false;
 function persist(){try{localStorage.setItem('manazashi-atelier',JSON.stringify(st));}catch(e){}}
 
 const $=id=>document.getElementById(id);
@@ -381,8 +385,13 @@ let particles=[];
 let flowerHue=0,flowerRot=0,flowerActive=false;
 const lighter=()=>bgObj().dark?'lighter':'source-over';
 
+function grain(x,y,cell){
+  const ix=Math.floor(x/cell), iy=Math.floor(y/cell);
+  let h=(ix*374761393+iy*668265263)|0; h=(h^(h>>>13))*1274126177|0; h=h^(h>>>16);
+  return ((h>>>0)%1000)/1000;
+}
 const DRAW={
-  crayon(pairs,I){
+  fude(pairs,I){
     const S=st.size, w=S*Math.max(.35,Math.min(1.5,1.5-I.speed/30));
     ax.lineCap='round';ax.lineJoin='round';
     for(const [a,b] of pairs){
@@ -391,6 +400,61 @@ const DRAW={
       ax.strokeStyle=col(.35,25,12);ax.lineWidth=Math.max(1,w*.25);
       ax.beginPath();ax.moveTo(a.x+w*.25,a.y-w*.2);ax.lineTo(b.x+w*.25,b.y-w*.2);ax.stroke();
       if(I.still){ax.fillStyle=col(.08,0,6);circle(ax,b.x,b.y,w/2+I.bloom);ax.fill();}
+    }
+  },
+  sumi(pairs,I){
+    // 墨：芯は濃く、まわりにじわっとにじむ。じっと見るとにじみが広がる
+    const S=st.size, slow=Math.max(.45,Math.min(1.15,1.2-I.speed/40)), w=Math.max(5,S*slow);
+    ax.lineCap='round';ax.lineJoin='round';
+    for(const [a,b] of pairs){
+      const d=Math.hypot(b.x-a.x,b.y-a.y);
+      // にじみ（外側）
+      const nb=Math.max(1,Math.ceil(d/(w*.5)));
+      for(let k=1;k<=nb;k++){
+        const t=k/nb, cx=a.x+(b.x-a.x)*t+(Math.random()-.5)*w*.5, cy=a.y+(b.y-a.y)*t+(Math.random()-.5)*w*.5;
+        const R=w*(.75+Math.random()*.45);
+        const g=ax.createRadialGradient(cx,cy,R*.2,cx,cy,R);
+        g.addColorStop(0,col(.10,0,-10));g.addColorStop(1,col(0,0,-10));
+        ax.fillStyle=g;circle(ax,cx,cy,R);ax.fill();
+      }
+      // 芯
+      ax.strokeStyle=col(.82,0,-14);ax.lineWidth=w*.62;
+      ax.beginPath();ax.moveTo(a.x,a.y);ax.lineTo(b.x,b.y);ax.stroke();
+      // 筆のかすれ（毛のすじ）
+      const nx=-(b.y-a.y)/(d||1), ny=(b.x-a.x)/(d||1);
+      ax.lineWidth=Math.max(1,w*.06);
+      for(let i=0;i<3;i++){
+        const o=(Math.random()-.5)*w*.85;
+        ax.strokeStyle=col(.35,0,-18);
+        ax.beginPath();ax.moveTo(a.x+nx*o,a.y+ny*o);ax.lineTo(b.x+nx*o,b.y+ny*o);ax.stroke();
+      }
+      // とどまると、にじみが広がる
+      if(I.still){
+        const R=w*.6+I.bloom*1.4;
+        for(let i=0;i<2;i++){
+          const ox=(Math.random()-.5)*R*.6, oy=(Math.random()-.5)*R*.6;
+          const g=ax.createRadialGradient(b.x+ox,b.y+oy,0,b.x+ox,b.y+oy,R);
+          g.addColorStop(0,col(.05,0,-10));g.addColorStop(.7,col(.03,0,-10));g.addColorStop(1,col(0,0,-10));
+          ax.fillStyle=g;circle(ax,b.x+ox,b.y+oy,R);ax.fill();
+        }
+      }
+    }
+  },
+  pencil(pairs,I){
+    const S=st.size, w=Math.max(4,S*.36);
+    for(const [a,b] of pairs){
+      const d=Math.hypot(b.x-a.x,b.y-a.y), steps=Math.max(1,Math.ceil(d/1.5));
+      const nx=-(b.y-a.y)/(d||1), ny=(b.x-a.x)/(d||1);
+      for(let k=1;k<=steps;k++){
+        const t=k/steps, cx=a.x+(b.x-a.x)*t, cy=a.y+(b.y-a.y)*t;
+        for(let i=0;i<11;i++){
+          const o=(Math.random()-.5)*w, x=cx+nx*o+(Math.random()-.5), y=cy+ny*o+(Math.random()-.5);
+          const g=grain(x,y,1.3);
+          if(g<.36) continue;                 // 紙の目でかすれる
+          ax.fillStyle=col(.35+g*.5,0,-4);
+          ax.fillRect(x,y,1.5,1.5);
+        }
+      }
     }
   },
   bubbles(pairs,I){
@@ -973,7 +1037,7 @@ $('bClear').addEventListener('click',()=>{
 
 /* ---------- records: trial (this device) / school GAS ---------- */
 const GAS=(typeof google!=='undefined'&&google.script&&google.script.run)?google.script.run:null;
-const DIST_ZIP='manazashi-atelier_v1.3.0_public.zip';
+const DIST_ZIP='manazashi-atelier_v1.3.3_public.zip';
 const CAP=80, WARN=60;
 let gasConfig=null, lastAskAt=0, saveBusy=false;
 if(GAS){try{GAS.withSuccessHandler(c=>{gasConfig=c;renderRecUI();}).withFailureHandler(()=>{}).getConfig();}catch(e){}}
@@ -1219,7 +1283,7 @@ function sample(){
   const saved={brush:st.brush,color:st.color,sym:st.sym,size:st.size};
   st.color='rainbow'; st.size=Math.max(22,Math.min(W,H)/26);
   const path=(i,N)=>{const t=i/N*Math.PI*2;const r=Math.min(W,H)*.36*Math.sin(3*t);return {x:W/2+r*Math.cos(t)+Math.sin(t*7)*12,y:H/2+r*Math.sin(t)};};
-  const runs=[['ink',1,500],['crayon',1,700],['bubbles',1,500],['flower',1,0]];
+  const runs=[['ink',1,500],['fude',1,700],['bubbles',1,500],['flower',1,0]];
   for(const [b,sym,N] of runs){
     st.brush=b; st.sym=sym; let p=path(0,N||1);
     for(let i=1;i<=N;i++){
