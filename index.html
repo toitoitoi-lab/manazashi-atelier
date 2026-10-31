@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>まなざしアトリエ</title>
-<meta name="description" content="視線入力（マウスエミュレーション）で、見つめたところに色が広がるお絵描きアプリ v1.3.3">
+<meta name="description" content="視線入力（マウスエミュレーション）で、見つめたところに色が広がるお絵描きアプリ v1.4.1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&family=BIZ+UDPGothic:wght@400;700&display=swap">
@@ -130,6 +130,14 @@ kbd{font-family:var(--font-body);border:1px solid var(--ui-line);border-radius:5
 .meter span.warn{background:#e8a317} .meter span.full{background:var(--danger)}
 .txt{grid-column:1/-1;width:100%;font:inherit;font-size:15px;padding:9px 10px;border-radius:10px;border:1.5px solid var(--ui-line);background:var(--ui-bg);color:var(--ui-fg)}
 a.btn{text-decoration:none;display:inline-block}
+#picker{position:fixed;inset:0;z-index:7;display:grid;place-items:center;background:rgba(5,7,20,.94);padding-inline:16px}
+.pk-box{display:grid;gap:18px;justify-items:center}
+#pkTitle{margin:0;color:#f2f1fa;font-family:var(--font-display);font-weight:700;font-size:clamp(20px,3vw,30px);letter-spacing:.06em}
+.pk-grid{display:grid;grid-template-columns:repeat(var(--cols,4),var(--pk,140px));gap:var(--pkgap,18px)}
+.pk-grid .dw{--bsize:var(--pk,140px);border-radius:24px;background:#262a42}
+.pk-grid .dw .ring{border-radius:28px;-webkit-mask:none;mask:none;background:none;box-shadow:inset 0 0 0 calc(var(--p,0)*8px) var(--ring)}
+.pk-grid .dw.cur{box-shadow:0 0 0 3px rgba(255,255,255,.9)}
+.pk-grid .dw.close{background:#151829;border:2px dashed rgba(255,255,255,.4)}
 @media (prefers-reduced-motion: reduce){.dw,.dw.flash{animation:none;transition:none}}
 @media (max-width:600px),(max-height:500px){#toolbar{gap:10px;padding:10px}.card{padding:22px 18px 20px;gap:12px}.card p{font-size:15px}}
 @media (max-width:600px){#panel{width:100%;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}.chip{padding:7px 12px;font-size:13px}}
@@ -151,6 +159,13 @@ a.btn{text-decoration:none;display:inline-block}
 </div>
 
 <div id="pauseBadge" hidden>ひとやすみ中</div>
+
+<div id="picker" hidden role="dialog" aria-labelledby="pkTitle">
+  <div class="pk-box">
+    <p id="pkTitle"></p>
+    <div class="pk-grid" id="pkGrid"></div>
+  </div>
+</div>
 
 <button id="gear" aria-label="支援者の設定をひらく" title="支援者の設定（H）">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
@@ -202,6 +217,8 @@ a.btn{text-decoration:none;display:inline-block}
 
   <section class="sec"><h3>見つめて選ぶボタン</h3>
     <div class="row"><label for="rDwell">見つめて押せるまでの時間</label><output id="oDwell"></output><input type="range" id="rDwell" min="0.5" max="4" step="0.1"></div>
+    <h3 style="margin-top:6px">ふで・いろ・もようの選び方</h3>
+    <div class="chips" id="chipsPickMode" style="margin-bottom:12px"></div>
     <h3 style="margin-top:6px">出すボタン</h3>
     <div class="chips" id="chipsTbShow" style="margin-bottom:12px"></div>
     <div class="chips" id="chipsPos" style="margin-bottom:10px"></div>
@@ -255,7 +272,7 @@ a.btn{text-decoration:none;display:inline-block}
   <section class="sec"><h3>キーボード</h3>
     <p class="keys"><kbd>Space</kbd> やすむ／つづける　<kbd>H</kbd> 設定　<kbd>S</kbd> 画像にする　<kbd>F</kbd> 全画面　<kbd>C</kbd> 色を切り替え　<kbd>B</kbd> ふでを切り替え　<kbd>Z</kbd> もどる　<kbd>Y</kbd> すすむ　<kbd>E</kbd> けす　<kbd>R</kbd> リセット</p>
   </section>
-  <p class="ver">まなざしアトリエ v1.3.3 public</p>
+  <p class="ver">まなざしアトリエ v1.4.1 public</p>
 </aside>
 
 <video id="camVideo" class="off" playsinline muted></video>
@@ -300,10 +317,9 @@ a.btn{text-decoration:none;display:inline-block}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
 (()=>{
-const VERSION='1.3.3';
+const VERSION='1.4.1';
 const BRUSHES=[
   {id:'fude',name:'ふで',svg:'<path d="M3 17c4-8 7 4 11-4s5-6 7-6" stroke-width="3"/>'},
-  {id:'sumi',name:'すみ',svg:'<path d="M4 17c3-6 7-2 10-6s4-4 6-5" stroke-width="3.6"/><circle cx="6" cy="7" r="2.6" fill="currentColor" stroke="none" opacity=".5"/>'},
   {id:'pencil',name:'いろえんぴつ',svg:'<path d="M4 17l4-4M7 18l6-6M11 18l8-8M14 15l5-5" stroke-width="1.3"/>'},
   {id:'bubbles',name:'しゃぼん玉',svg:'<circle cx="8.5" cy="14" r="5"/><circle cx="16.5" cy="7.5" r="3.5"/><circle cx="18" cy="17" r="2.5"/>'},
   {id:'sparkle',name:'きらきら',svg:'<path d="M12 3l2 6.5 6.5 2.5-6.5 2.5L12 21l-2-6.5L3.5 12 10 9.5z"/>'},
@@ -327,7 +343,7 @@ const INPUT_HINT={pointer:'視線入力装置（マウスモード）、マウ�
 const POS=[{id:'left',name:'ボタン：左'},{id:'right',name:'右'},{id:'bottom',name:'下'},{id:'top',name:'上'},{id:'off',name:'なし'}];
 const TBS=[{id:'auto',name:'ボタン：自動'},{id:'s',name:'小',px:80},{id:'m',name:'中',px:104},{id:'l',name:'大',px:136}];
 
-const DEF={tbShow:{brush:true,color:true,sym:true,undo:true,redo:true,erase:true,reset:true,pause:true},select:'both',blinkMs:800,eraser:false,input:'pointer',camId:'',learner:'',saveMode:'download',brush:'bubbles',color:'rainbow',sym:1,size:30,smooth:6,dwell:1.5,pos:'left',tbsize:'auto',fade:false,fadeSpeed:3,cursor:true,sound:false,bg:'night',heat:false};
+const DEF={pickMode:'list',tbShow:{brush:true,color:true,sym:true,undo:true,redo:true,erase:true,reset:true,pause:true},select:'both',blinkMs:800,eraser:false,input:'pointer',camId:'',learner:'',saveMode:'download',brush:'bubbles',color:'rainbow',sym:1,size:30,smooth:6,dwell:1.5,pos:'left',tbsize:'auto',fade:false,fadeSpeed:3,cursor:true,sound:false,bg:'night',heat:false};
 let st=Object.assign({},DEF);
 try{const s=JSON.parse(localStorage.getItem('manazashi-atelier')||'null'); if(s) st=Object.assign(st,s);}catch(e){}
 st.tbShow=Object.assign({},DEF.tbShow,st.tbShow||{});
@@ -400,44 +416,6 @@ const DRAW={
       ax.strokeStyle=col(.35,25,12);ax.lineWidth=Math.max(1,w*.25);
       ax.beginPath();ax.moveTo(a.x+w*.25,a.y-w*.2);ax.lineTo(b.x+w*.25,b.y-w*.2);ax.stroke();
       if(I.still){ax.fillStyle=col(.08,0,6);circle(ax,b.x,b.y,w/2+I.bloom);ax.fill();}
-    }
-  },
-  sumi(pairs,I){
-    // 墨：芯は濃く、まわりにじわっとにじむ。じっと見るとにじみが広がる
-    const S=st.size, slow=Math.max(.45,Math.min(1.15,1.2-I.speed/40)), w=Math.max(5,S*slow);
-    ax.lineCap='round';ax.lineJoin='round';
-    for(const [a,b] of pairs){
-      const d=Math.hypot(b.x-a.x,b.y-a.y);
-      // にじみ（外側）
-      const nb=Math.max(1,Math.ceil(d/(w*.5)));
-      for(let k=1;k<=nb;k++){
-        const t=k/nb, cx=a.x+(b.x-a.x)*t+(Math.random()-.5)*w*.5, cy=a.y+(b.y-a.y)*t+(Math.random()-.5)*w*.5;
-        const R=w*(.75+Math.random()*.45);
-        const g=ax.createRadialGradient(cx,cy,R*.2,cx,cy,R);
-        g.addColorStop(0,col(.10,0,-10));g.addColorStop(1,col(0,0,-10));
-        ax.fillStyle=g;circle(ax,cx,cy,R);ax.fill();
-      }
-      // 芯
-      ax.strokeStyle=col(.82,0,-14);ax.lineWidth=w*.62;
-      ax.beginPath();ax.moveTo(a.x,a.y);ax.lineTo(b.x,b.y);ax.stroke();
-      // 筆のかすれ（毛のすじ）
-      const nx=-(b.y-a.y)/(d||1), ny=(b.x-a.x)/(d||1);
-      ax.lineWidth=Math.max(1,w*.06);
-      for(let i=0;i<3;i++){
-        const o=(Math.random()-.5)*w*.85;
-        ax.strokeStyle=col(.35,0,-18);
-        ax.beginPath();ax.moveTo(a.x+nx*o,a.y+ny*o);ax.lineTo(b.x+nx*o,b.y+ny*o);ax.stroke();
-      }
-      // とどまると、にじみが広がる
-      if(I.still){
-        const R=w*.6+I.bloom*1.4;
-        for(let i=0;i<2;i++){
-          const ox=(Math.random()-.5)*R*.6, oy=(Math.random()-.5)*R*.6;
-          const g=ax.createRadialGradient(b.x+ox,b.y+oy,0,b.x+ox,b.y+oy,R);
-          g.addColorStop(0,col(.05,0,-10));g.addColorStop(.7,col(.03,0,-10));g.addColorStop(1,col(0,0,-10));
-          ax.fillStyle=g;circle(ax,b.x+ox,b.y+oy,R);ax.fill();
-        }
-      }
     }
   },
   pencil(pairs,I){
@@ -740,21 +718,24 @@ function camTick(now){
 
 
 /* ---------- app state ---------- */
-let started=false, paused=false;
+let started=false, paused=false, overUIPick=false;
 const heat={cols:24,rows:14,data:new Float32Array(24*14),time:0};
 const panel=$('panel'), welcome=$('welcome'), saveModal=$('saveModal');
 
 /* ---------- dwell targets ---------- */
 const dwellState=new Map(); // el -> {p, cool}
-function dwellTargets(){return [...document.querySelectorAll('[data-dwell]')].filter(el=>el.offsetParent!==null);}
+function dwellTargets(){const root=pickerOpen()?$('picker'):document;return [...root.querySelectorAll('[data-dwell]')].filter(el=>el.offsetParent!==null&&(pickerOpen()||!el.closest('#picker')));}
+const pickerOpen=()=>!$('picker').hidden;
 function activate(action,el){
   if(el){el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');}
   tone(0,.05,1046.5);
   switch(action){
     case 'start': start(); break;
-    case 'brush': {const i=BRUSHES.findIndex(b=>b.id===st.brush);st.brush=BRUSHES[(i+1)%BRUSHES.length].id;break;}
-    case 'color': {const i=COLORS.findIndex(c=>c.id===st.color);st.color=COLORS[(i+1)%COLORS.length].id;break;}
-    case 'sym': {const i=SYMS.findIndex(s=>s.n===st.sym);st.sym=SYMS[(i+1)%SYMS.length].n;break;}
+    case 'brush': case 'color': case 'sym':
+      if(st.pickMode==='list'&&el&&el.closest('#toolbar')){openPicker(action);return;}
+      cycle(action); break;
+    case 'pick': {const k=el.dataset.kind,v=el.dataset.val; if(k==='brush') st.brush=v; else if(k==='color') st.color=v; else st.sym=+v; st.eraser=false; closePicker(); break;}
+    case 'pickclose': closePicker(); break;
     case 'pause': paused=!paused; break;
     case 'undo': histUndo(); break;
     case 'redo': histRedo(); break;
@@ -764,6 +745,43 @@ function activate(action,el){
   if(action==='brush'||action==='color'||action==='sym') st.eraser=false;
   persist(); renderUI();
 }
+function cycle(kind){
+  if(kind==='brush'){const i=BRUSHES.findIndex(b=>b.id===st.brush);st.brush=BRUSHES[(i+1)%BRUSHES.length].id;}
+  else if(kind==='color'){const i=COLORS.findIndex(c=>c.id===st.color);st.color=COLORS[(i+1)%COLORS.length].id;}
+  else {const i=SYMS.findIndex(s=>s.n===st.sym);st.sym=SYMS[(i+1)%SYMS.length].n;}
+}
+/* 一覧から選ぶ（見つめると開く） */
+function openPicker(kind){
+  const T={brush:'ふでを えらぶ',color:'いろを えらぶ',sym:'もようを えらぶ'};
+  $('pkTitle').textContent=T[kind];
+  let items=[];
+  if(kind==='brush') items=BRUSHES.map(b=>({v:b.id,name:b.name,ic:svgWrap(b.svg),cur:b.id===st.brush}));
+  else if(kind==='color') items=COLORS.map(c=>({v:c.id,name:c.id==='mono'?(bgObj().dark?'しろ':'くろ'):c.name,sw:swatchCss(c.id),cur:c.id===st.color}));
+  else items=SYMS.map(x=>({v:String(x.n),name:x.name,ic:svgWrap(SYM_SVG(x.n)),cur:x.n===st.sym}));
+  const g=$('pkGrid'); g.innerHTML='';
+  for(const it of items){
+    const b=document.createElement('button'); b.className='dw'+(it.cur?' cur':''); b.type='button';
+    b.dataset.dwell='pick'; b.dataset.kind=kind; b.dataset.val=it.v;
+    b.innerHTML='<span class="ring"></span>'+(it.sw?`<span class="sw" style="background:${it.sw}"></span>`:`<span class="ic">${it.ic}</span>`)+`<span class="lb">${it.name}</span>`;
+    b.setAttribute('aria-label',it.name+(it.cur?'（いま）':''));
+    b.addEventListener('click',()=>activate('pick',b)); g.appendChild(b);
+  }
+  const c=document.createElement('button'); c.className='dw close'; c.type='button'; c.dataset.dwell='pickclose';
+  c.innerHTML='<span class="ring"></span><span class="ic">'+svgWrap('<path d="M6 6l12 12M18 6L6 18"/>')+'</span><span class="lb">とじる</span>';
+  c.addEventListener('click',()=>activate('pickclose',c)); g.appendChild(c);
+  // 大きさ：画面に入るいちばん大きいボタン
+  const n=items.length+1, gap=Math.max(12,Math.min(24,innerWidth*.02));
+  let best={pk:0,cols:4};
+  for(let cols=2;cols<=n;cols++){
+    const rows=Math.ceil(n/cols);
+    const pk=Math.floor(Math.min((innerWidth-32-gap*(cols-1))/cols,(innerHeight-120-gap*(rows-1))/rows,190));
+    if(pk>best.pk) best={pk,cols};
+  }
+  g.style.setProperty('--cols',best.cols); g.style.setProperty('--pk',best.pk+'px'); g.style.setProperty('--pkgap',gap+'px');
+  for(const el of g.querySelectorAll('[data-dwell]')) dwellState.set(el,{p:0,cool:700});
+  $('picker').hidden=false; $('toolbar').style.visibility='hidden';
+}
+function closePicker(){ $('picker').hidden=true; $('toolbar').style.visibility=''; $('pkGrid').innerHTML=''; for(const el of $('toolbar').querySelectorAll('.dw')){const s=dwellState.get(el); if(s){s.p=0;s.cool=900;}} }
 document.querySelectorAll('[data-dwell]').forEach(el=>el.addEventListener('click',()=>{if(el.dataset.dwell==='start') ensureAudio(); activate(el.dataset.dwell,el);}));
 
 function start(){
@@ -827,6 +845,7 @@ function frame(t){
   // dwell buttons
   let overUI=false;
   const targets=(panelOpen||modalOpen)?[]:dwellTargets();
+  if(pickerOpen()) overUIPick=true; else overUIPick=false;
   const tb=$('toolbar');
   if(!tb.classList.contains('pos-off') && started){
     const r=tb.getBoundingClientRect();
@@ -844,7 +863,7 @@ function frame(t){
     el.style.setProperty('--p',(hit&&blink.prog>0?Math.max(s.p,blink.prog):s.p).toFixed(3));
   }
 
-  const canDraw=started&&!paused&&inside&&!overUI&&!panelOpen&&!modalOpen;
+  const canDraw=started&&!paused&&inside&&!overUI&&!overUIPick&&!panelOpen&&!modalOpen;
 
   // fade
   if(st.fade&&started){ax.save();ax.globalAlpha=.0025*st.fadeSpeed*f;ax.fillStyle=bgObj().c;ax.fillRect(0,0,W,H);ax.restore();}
@@ -977,6 +996,7 @@ function renderUI(){
   chips('chipsColor',COLORS.map(c=>c.id==='mono'?Object.assign({},c,{name:bgObj().dark?'しろ':'くろ'}):c),c=>c.id===st.color,c=>st.color=c.id,c=>swatchCss(c.id));
   chips('chipsSym',SYMS,s=>s.n===st.sym,s=>st.sym=s.n);
   chips('chipsTbShow',TBMAP.map(([k,id])=>({k,name:TBNAME[k]})),x=>st.tbShow[x.k]!==false,x=>{st.tbShow={...st.tbShow,[x.k]:!(st.tbShow[x.k]!==false)};});
+  chips('chipsPickMode',[{id:'list',name:'見つめると一覧が開く'},{id:'cycle',name:'見つめるたびに次へ'}],x=>x.id===st.pickMode,x=>st.pickMode=x.id);
   chips('chipsSelect',SELECTS,x=>x.id===st.select,x=>st.select=x.id);
   $('blinkRow').hidden=st.select==='dwell';
   $('rBlink').value=(st.blinkMs/1000).toFixed(1); $('oBlink').textContent=(st.blinkMs/1000).toFixed(1)+' 秒';
@@ -1037,7 +1057,7 @@ $('bClear').addEventListener('click',()=>{
 
 /* ---------- records: trial (this device) / school GAS ---------- */
 const GAS=(typeof google!=='undefined'&&google.script&&google.script.run)?google.script.run:null;
-const DIST_ZIP='manazashi-atelier_v1.3.3_public.zip';
+const DIST_ZIP='manazashi-atelier_v1.4.1_public.zip';
 const CAP=80, WARN=60;
 let gasConfig=null, lastAskAt=0, saveBusy=false;
 if(GAS){try{GAS.withSuccessHandler(c=>{gasConfig=c;renderRecUI();}).withFailureHandler(()=>{}).getConfig();}catch(e){}}
@@ -1269,13 +1289,13 @@ addEventListener('keydown',e=>{
   else if(k==='h'){panel.hidden?openPanel():closePanel();}
   else if(k==='s'){openSave();}
   else if(k==='f'){toggleFull();}
-  else if(k==='c'){activate('color',$('tbColor'));}
-  else if(k==='b'){activate('brush',$('tbBrush'));}
+  else if(k==='c'){cycle('color');st.eraser=false;persist();renderUI();}
+  else if(k==='b'){cycle('brush');st.eraser=false;persist();renderUI();}
   else if(k==='z'&&!e.shiftKey){if(started) activate('undo',$('tbUndo'));}
   else if(k==='y'||(k==='z'&&e.shiftKey)){if(started) activate('redo',$('tbRedo'));}
   else if(k==='e'){if(started) activate('erase',$('tbErase'));}
   else if(k==='r'){if(started) activate('reset',$('tbReset'));}
-  else if(k==='escape'){if(calib.active) calibCancel(); else if(!$('askBox').hidden) $('askBox').hidden=true; else if(!$('recModal').hidden) $('recModal').hidden=true; else if(!saveModal.hidden) saveModal.hidden=true; else if(!panel.hidden) closePanel();}
+  else if(k==='escape'){if(pickerOpen()) closePicker(); else if(calib.active) calibCancel(); else if(!$('askBox').hidden) $('askBox').hidden=true; else if(!$('recModal').hidden) $('recModal').hidden=true; else if(!saveModal.hidden) saveModal.hidden=true; else if(!panel.hidden) closePanel();}
 });
 
 /* ---------- sample artwork behind the welcome card ---------- */
